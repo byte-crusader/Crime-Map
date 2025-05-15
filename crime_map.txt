@@ -1,0 +1,32 @@
+Crime Map using Python, Javascript
+1. Use beautiful soup to web scrape on websites containing criminal data.
+
+2. Aggregate the data into geojson format and create an API.
+    Include:
+    - Location
+    - Date/Time
+    - Type of crime/crime commited
+
+3. Access that API with Javascript and plot points on a map based on that geojson data.
+
+
+Summary: 
+Users will enter a a time/date and street address or city into an input and the map will display
+plots on the map with details about crimes that were committed at those locations or general
+locations. There will be a blast radius on the location showing all crimes near that 
+location the user input.
+
+Notes:
+
+- GEO coding services for address database
+- What type of layers on the map:
+    - Polygons
+    - Symbols
+- Different symbols for different crimes
+
+To-Do:
+    1. Figure out how to use external geojson file.
+    2. Make a crime geojson example file.
+    3. Get rendering to work, figure out how to plot multiple crimes with different icons.
+    4. Figure out how to grab user input and search and display from the geojson based on
+    user input.
