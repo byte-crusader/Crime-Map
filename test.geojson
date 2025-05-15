@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+      "crimeType": "Vehicle Theft",
+        "date": "2024-05-07T15:30:00",
+        "description": "2018 Honda Civic stolen from parking lot",
+        "address": "500 Block Pine Street",
+        "status": "Under Investigation",
+        "reportNumber": "2024-123456"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0445, 40.6892]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+      "crimeType": "Vehicle Theft",
+        "date": "2024-05-07T15:30:00",
+        "description": "2018 Honda Civic stolen from parking lot",
+        "address": "500 Block Pine Street",
+        "status": "Under Investigation",
+        "reportNumber": "2024-123456"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-84.0445, 50.6892]
+      }
+    }
+  ]
+}

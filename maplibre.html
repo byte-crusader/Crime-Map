@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/maplibre-gl@^5.4.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@^5.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <style>
+        body{
+            width:100%;
+            height:100vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction:column;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css"/>
+
+ <div id='map' style='width: 900px; height: 600px;'></div>
+ <input></input>
+  <script>
+    var map = new maplibregl.Map({
+      container: 'map',
+      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // stylesheet location
+      center: [0, 0], // starting position [lng, lat]
+      zoom: 3 // starting zoom
+    });
+    async function fetchJSONData() {
+    try {
+        const response = await fetch('./test.geojson');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch data:', error);
+    }
+}
+      console.log(maplibregl)
+      
+
+    map.on('load', async () => {
+    //   const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
+    const image = await map.loadImage('./icon.png');
+      map.addImage('custom-marker', image.data);
+      
+      const geoJSONcontent = await fetchJSONData();
+      //Get important json data
+        console.log(geoJSONcontent.features[0])
+        geoJSONcontent.features.forEach(feature => {
+            console.log(feature.properties)
+        })
+      map.addSource('maine', {
+            'type': 'geojson',
+            'data': geoJSONcontent
+      });
+      map.addLayer({
+            'id': 'maine',
+            'type': 'symbol',
+            'source': 'maine',
+            'layout': {
+                'icon-image': 'custom-marker',
+                'icon-size': 0.07,
+                // get the year from the source's "year" property
+                'text-field': ['get', 'year'],
+                'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                ],
+                'text-offset': [0, 1.25],
+                'text-anchor': 'top'
+            }
+        });
+        });
+        
+        // Create a popup, but don't add it to the map yet.
+        const popup = new maplibregl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        // Make sure to detect marker change for overlapping markers
+        // and use mousemove instead of mouseenter event
+        let currentFeatureCoordinates = undefined;
+        map.on('mousemove', 'maine', (e) => {
+            const featureCoordinates = e.features[0].geometry.coordinates.toString();
+            if (currentFeatureCoordinates !== featureCoordinates) {
+                currentFeatureCoordinates = featureCoordinates;
+
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const description = e.features[0].properties.description;
+
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                // Populate the popup and set its coordinates
+                // based on the feature found.
+                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            }
+        });
+
+        map.on('mouseleave', 'places', () => {
+            currentFeatureCoordinates = undefined;
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+        });
+  </script>
+</body>
+</html>
