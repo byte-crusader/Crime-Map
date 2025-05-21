@@ -33,6 +33,7 @@
     async function fetchJSONData() {
     try {
         const response = await fetch('./test.geojson');
+	
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -40,21 +41,21 @@
     } catch (error) {
         console.error('Failed to fetch data:', error);
     }
-}
-      console.log(maplibregl)
-      
+} 
 
     map.on('load', async () => {
-    //   const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
-    const image = await map.loadImage('./icon.png');
+      // const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
+	 
+	 const image = await map.loadImage('./icon.png');
       map.addImage('custom-marker', image.data);
-      
-      const geoJSONcontent = await fetchJSONData();
+	 const geoJSONcontent = await fetchJSONData();	
+	 console.log("here",geoJSONcontent)
+
       //Get important json data
-        console.log(geoJSONcontent.features[0])
-        geoJSONcontent.features.forEach(feature => {
-            console.log(feature.properties)
-        })
+        //console.log(geoJSONcontent.features[0])
+//        geoJSONcontent.features.forEach(feature => {
+//            console.log(feature.properties)
+//        })
       map.addSource('maine', {
             'type': 'geojson',
             'data': geoJSONcontent
@@ -110,6 +111,51 @@
                 popup.setLngLat(coordinates).setHTML(description).addTo(map);
             }
         });
+const geocoderApi = {
+        forwardGeocode: async (config) => {
+            const features = [];
+            try {
+                const request =
+            `https://nominatim.openstreetmap.org/search?q=${
+                config.query
+            }&format=geojson&polygon_geojson=1&addressdetails=1`;
+                const response = await fetch(request);
+                const geojson = await response.json();
+                for (const feature of geojson.features) {
+                    const center = [
+                        feature.bbox[0] +
+                    (feature.bbox[2] - feature.bbox[0]) / 2,
+                        feature.bbox[1] +
+                    (feature.bbox[3] - feature.bbox[1]) / 2
+                    ];
+                    const point = {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: center
+                        },
+                        place_name: feature.properties.display_name,
+                        properties: feature.properties,
+                        text: feature.properties.display_name,
+                        place_type: ['place'],
+                        center
+                    };
+                    features.push(point);
+                }
+            } catch (e) {
+                console.error(`Failed to forwardGeocode with error: ${e}`);
+            }
+
+            return {
+                features
+            };
+        }
+    };
+    map.addControl(
+        new MaplibreGeocoder(geocoderApi, {
+            maplibregl
+        })
+    );
 
         map.on('mouseleave', 'places', () => {
             currentFeatureCoordinates = undefined;
