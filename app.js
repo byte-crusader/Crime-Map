@@ -1,7 +1,16 @@
 async function getData() {
-  const url = "https://api.usa.gov/crime/fbi/cde";
+  const api_key = ""
+  const url = `https://api.usa.gov/crime/fbi/sapi/api/data/national/robbery`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+  headers: {
+    "x-api-key": `${api_key}`,
+    'Content-Type': 'application/json'
+  }
+});
+
+    console.log("Status:", response.status); // Log the status code
+    console.log("URL tried:", url); // Log the URL being accessed
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
@@ -12,7 +21,6 @@ async function getData() {
     console.error(error.message);
   }
 }
-
 getData()
 
 let btn = document.querySelector("#btn");  
