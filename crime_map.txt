@@ -30,7 +30,13 @@ To-Do:
     3. Get rendering to work, figure out how to plot multiple crimes with different icons.
     4. Figure out how to grab user input and search and display from the geojson based on
     user input.
-
+    5. Need to figure out how to filter the crime data of the geojson file. Thinking that check boxes would be nice for this so people can view multiple crime types on the map at once. Might need to limit the date range someone can search as to not over populate the map. 
+	User input filters:
+	- Date
+	- Type of crime
+	- Location
+    6. Scrape open source crime data from police stations around the country to populate the map with. This data will be converted to geojson format.
+    7. Figure out a good way to sort and plot the data, add specific icons for each type of crime.
 
     US open source police station crime records
 

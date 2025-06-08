@@ -1,13 +1,12 @@
 async function getData() {
-  const api_key = ""
-  const url = `https://api.usa.gov/crime/fbi/sapi/api/data/national/robbery`;
+  //const api_key = ""
+  const url = `https://data.lacity.org/resource/2nrs-mtv8.json`;
   try {
-    const response = await fetch(url, {
-  headers: {
-    "x-api-key": `${api_key}`,
-    'Content-Type': 'application/json'
-  }
-});
+    const response = await fetch(url);
+  //headers: {
+  //  "x-api-key": `${api_key}`,
+  //  'Content-Type': 'application/json'
+  //}
 
     console.log("Status:", response.status); // Log the status code
     console.log("URL tried:", url); // Log the URL being accessed
