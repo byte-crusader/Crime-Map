@@ -1,27 +1,3 @@
-async function getData() {
-  //const api_key = ""
-  const url = `https://data.lacity.org/resource/2nrs-mtv8.json`;
-  try {
-    const response = await fetch(url);
-  //headers: {
-  //  "x-api-key": `${api_key}`,
-  //  'Content-Type': 'application/json'
-  //}
-
-    console.log("Status:", response.status); // Log the status code
-    console.log("URL tried:", url); // Log the URL being accessed
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const json = await response.json();
-    console.log(json);
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-getData()
-
 let btn = document.querySelector("#btn");  
 
 let input_date = document.querySelector("#dateInput").value;
@@ -40,8 +16,9 @@ let input_date = document.querySelector("#dateInput").value;
     //Start of async function that gathers GEOjson data from local file
     async function fetchJSONData() {
     try {
-        const response = await fetch('./test.geojson');
-	
+        //const response = await fetch('./test.geojson');
+	    const response = await fetch('http://localhost:3000/crimes');
+    
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -59,26 +36,44 @@ let input_date = document.querySelector("#dateInput").value;
 	 const image = await map.loadImage('./icon.png');//Grab local star image to be used as icon
      map.addImage('custom-marker', image.data);//Add the image to the map
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
-	 console.log("here",geoJSONcontent)
+	 //console.log(input_date)
+     //console.log("here",geoJSONcontent)
+     const geojson = {
+            type: 'FeatureCollection',
+            features: geoJSONcontent.map(crime => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [
+                        parseFloat(crime.longitude),
+                        parseFloat(crime.latitude)
+                    ]
+                },
+                properties: {
+                    date: crime.date,
+                    crimeType: crime.crimeType
+                }
+            }))
+        };
     const geoJSONcontentFiltered = {
         type: 'FeatureCollection',
-        features: geoJSONcontent.features.filter(feature => {
+        features: geojson.features.filter(feature => {
             return feature.properties.date === input_date;
         })
     };
-//Get json data
-//        console.log(geoJSONcontent.features[0])
-//          geoJSONcontent.features.forEach(feature => {
-//              console.log(feature.properties)
-//        })
-      map.addSource('maine', {
+        //To loop through all the data in the json
+      /*  console.log(geojson.features[0])
+          geojson.features.forEach(feature => {
+              console.log(feature.properties)
+        })*/
+      map.addSource('crimes', {
             'type': 'geojson',
-            'data': geoJSONcontentFiltered
+            'data': geojson
       });
       map.addLayer({
-            'id': 'maine',
+            'id': 'crimes',
             'type': 'symbol',
-            'source': 'maine',
+            'source': 'crimes',
             'layout': {
                 'icon-image': 'custom-marker',
                 'icon-size': 0.07,
@@ -103,16 +98,17 @@ let input_date = document.querySelector("#dateInput").value;
         // Make sure to detect marker change for overlapping markers
         // and use mousemove instead of mouseenter event
         let currentFeatureCoordinates = undefined;
-        map.on('mousemove', 'maine', (e) => {
-            const featureCoordinates = e.features[0].geometry.coordinates.toString();
+        map.on('mousemove', 'crimes', (e) => {
+            const featureCoordinates = e.features[0].geometry.coordinates;
+            //console.log(featureCoordinates)
             if (currentFeatureCoordinates !== featureCoordinates) {
                 currentFeatureCoordinates = featureCoordinates;
 
                 // Change the cursor style as a UI indicator.
                 map.getCanvas().style.cursor = 'pointer';
 
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const description = e.features[0].properties.description;
+                const crimeType = e.features[0].properties.crimeType
+                const coordinates = e.features[0].geometry.coordinates;
 
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
@@ -120,11 +116,14 @@ let input_date = document.querySelector("#dateInput").value;
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
-
+        const popupContent = `
+            <strong>Crime:</strong> ${crimeType}<br>
+            <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}    
+                `;
                 // Populate the popup and set its coordinates
                 // based on the feature found.
                 // Add stars to map
-                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                popup.setLngLat(coordinates).setHTML(popupContent).addTo(map);
             }
         });
 const geocoderApi = {
@@ -173,7 +172,7 @@ const geocoderApi = {
         })
     );
 
-        map.on('mouseleave', 'places', () => {
+        map.on('mouseleave', 'crimes', () => {
             currentFeatureCoordinates = undefined;
             map.getCanvas().style.cursor = '';
             popup.remove();

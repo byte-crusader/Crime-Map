@@ -7,6 +7,10 @@
 const fastify = require('fastify')({
   logger: true
 })
+fastify.register(require('@fastify/cors'), {
+  origin: '*'  // This allows all origins - be more restrictive in production
+})
+
 
 const NewYork_URL = 'https://data.cityofnewyork.us/resource/qgea-i56i.json'
 // Declare a route
@@ -17,8 +21,14 @@ fastify.get('/crimes', async (request, reply) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data)
-        return data
+        //console.log(data)
+        const filteredData = data.map(crime => ({
+            date: crime.cmplnt_fr_dt,
+            crimeType: crime.ofns_desc,
+            longitude: crime.longitude,
+            latitude: crime.latitude
+        }));
+        return filteredData
     }catch (error){
         console.log(error.message)
     }
