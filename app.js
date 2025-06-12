@@ -55,6 +55,7 @@ let input_date = document.querySelector("#dateInput").value;
                 }
             }))
         };
+
     const geoJSONcontentFiltered = {
         type: 'FeatureCollection',
         features: geojson.features.filter(feature => {
@@ -62,13 +63,26 @@ let input_date = document.querySelector("#dateInput").value;
         })
     };
         //To loop through all the data in the json
-      /*  console.log(geojson.features[0])
+        console.log(geojson.features[0])
           geojson.features.forEach(feature => {
-              console.log(feature.properties)
-        })*/
+               
+            const dateString = feature.properties.date
+            const dateObject = new Date(dateString)
+            feature.properties.date = dateObject
+        })
+        console.log(geojsogeojson.features.date)
+        // 2024-12-31T00:00:00.000 seperation of concerns
+        //const dateString = geojson.features[0].properties.date
+        //const dateObject = new Date(dateString)
+        //console.log(dateObject.getFullYear())
+        //console.log(dateObject.toLocaleDateString())
+        //console.log(dateObject)
+        // section the code into functions 
+
+
       map.addSource('crimes', {
             'type': 'geojson',
-            'data': geojson
+            'data': geoJSONFiltered
       });
       map.addLayer({
             'id': 'crimes',

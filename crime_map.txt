@@ -35,6 +35,7 @@ To-Do:
 	- Date
 	- Type of crime
 	- Location
+    - Police Department
     6. Scrape open source crime data from police stations around the country to populate the map with. This data will be converted to geojson format.
     7. Figure out a good way to sort and plot the data, add specific icons for each type of crime.
 
