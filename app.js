@@ -55,33 +55,29 @@ let input_date = document.querySelector("#dateInput").value;
                 }
             }))
         };
-
-    const geoJSONcontentFiltered = {
-        type: 'FeatureCollection',
-        features: geojson.features.filter(feature => {
-            return feature.properties.date === input_date;
-        })
-    };
-        //To loop through all the data in the json
-        //console.log(geojson.features[0])
-          geojson.features.forEach(feature => {
-               
+        geojson.features.forEach(feature => {
             const dateString = feature.properties.date
             const dateObject = new Date(dateString)
             feature.properties.date = dateObject
+        })  
+
+
+        const inputDateFormated = formatDate(input_date)
+        const crimeDate = geojson.features[0].properties.date.toLocaleDateString()
+
+    const geoJSONFiltered = {
+        type: 'FeatureCollection',
+        features: geojson.features.filter(feature => {
+            return crimeDate === inputDateFormated;
         })
+    };
+        //To loop through all the data in the json
         console.log(geojson.features[0].properties.date.toLocaleDateString())
         function formatDate(userDate){
             const [year, month, day] = userDate.split('-')
             return `${month}/${day}/${year}`
         }
-        console.log(formatDate(input_date))
-        // 2024-12-31T00:00:00.000 seperation of concerns
-        //const dateString = geojson.features[0].properties.date
-        //const dateObject = new Date(dateString)
-        //console.log(dateObject.getFullYear())
-        //console.log(dateObject.toLocaleDateString())
-        //console.log(dateObject)
+        // 2024-12-31T00:00:00.000 separation of concerns
         // section the code into functions 
 
 
