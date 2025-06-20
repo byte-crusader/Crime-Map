@@ -1,9 +1,18 @@
 let btn = document.querySelector("#btn");  
 
-let input_date = document.querySelector("#dateInput").value;
-   btn.addEventListener('click', (input_date) => {
-   console.log(input_date)
-  })
+btn.addEventListener('click', () => {
+const input_date = document.querySelector("#dateInput").value;
+    
+    fetch('http://localhost:3000/date', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: input_date
+    })
+    .then(response => response.text())
+    .then(data => console.log("backend",data))
+})
 
 
     var map = new maplibregl.Map({
@@ -55,6 +64,7 @@ let input_date = document.querySelector("#dateInput").value;
                 }
             }))
         };
+        /*
         geojson.features.forEach(feature => {
             const dateString = feature.properties.date
             const dateObject = new Date(dateString)
@@ -76,14 +86,14 @@ let input_date = document.querySelector("#dateInput").value;
         function formatDate(userDate){
             const [year, month, day] = userDate.split('-')
             return `${month}/${day}/${year}`
-        }
+        }*/
         // 2024-12-31T00:00:00.000 separation of concerns
         // section the code into functions 
 
 
       map.addSource('crimes', {
             'type': 'geojson',
-            'data': geoJSONFiltered
+            'data': geojson
       });
       map.addLayer({
             'id': 'crimes',

@@ -13,6 +13,18 @@ fastify.register(require('@fastify/cors'), {
 
 
 const NewYork_URL = 'https://data.cityofnewyork.us/resource/qgea-i56i.json'
+
+fastify.post('/date', async (request, reply) => {
+    try{
+        console.log(request.body)
+        const inputDate = request.body;
+        return inputDate
+    }catch (error){
+        console.log(error)
+    }
+})
+
+
 // Declare a route
 fastify.get('/crimes', async (request, reply) => {
     try{
