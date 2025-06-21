@@ -2,18 +2,62 @@ let btn = document.querySelector("#btn");
 
 btn.addEventListener('click', () => {
 const input_date = document.querySelector("#dateInput").value;
-    
+   console.log(input_date) 
     fetch('http://localhost:3000/date', {
         method: 'POST',
         headers: {
-            'Content-Type': 'text/plain',
+            'Content-Type': 'application/json',
         },
-        body: input_date
+        body:JSON.stringify({date: input_date })
     })
-    .then(response => response.text())
-    .then(data => console.log("backend",data))
-})
-
+    .then(response => response.json())
+    .then(async data => {
+    if (map.getSource('crimes')){
+        map.removeLayer('crimes');
+        map.removeSource('crimes')
+    }
+    const geoJSONcontent = await fetchJSONData();
+console.log(geoJSONcontent)
+ const geojson = {
+        type: 'FeatureCollection',
+        features: geoJSONcontent.map(crime => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [ 
+                    parseFloat(crime.longitude),
+                    parseFloat(crime.latitude)
+                ]
+            },
+            properties: {
+                date: crime.date,
+                crimeType: crime.crimeType
+            } 
+        }))
+    };
+        map.addSource('crimes', { 
+            'type': 'geojson', 
+            'data': geojson 
+      }); 
+      map.addLayer({ 
+            'id': 'crimes', 
+            'type': 'symbol', 
+            'source': 'crimes', 
+            'layout': { 
+                'icon-image': 'custom-marker', 
+                'icon-size': 0.07, 
+                // get the year from the source's "year" property
+                'text-field': ['get', 'year'], 
+                'text-font': [ 
+                    'Open Sans Semibold', 
+                    'Arial Unicode MS Bold' 
+                ], 
+                'text-offset': [0, 1.25], 
+                'text-anchor': 'top' 
+            } 
+        });
+    });
+});
 
     var map = new maplibregl.Map({
       container: 'map',
@@ -30,12 +74,13 @@ const input_date = document.querySelector("#dateInput").value;
     
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        }       
         return await response.json();
     } catch (error) {
         console.error('Failed to fetch data:', error);
     }
-} 
+}
+
 //End of async function
 
 //Load map function, start on page load    
@@ -46,7 +91,7 @@ const input_date = document.querySelector("#dateInput").value;
      map.addImage('custom-marker', image.data);//Add the image to the map
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
 	 //console.log(input_date)
-     //console.log("here",geoJSONcontent)
+     console.log("here",geoJSONcontent)
      const geojson = {
             type: 'FeatureCollection',
             features: geoJSONcontent.map(crime => ({
