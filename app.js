@@ -1,3 +1,6 @@
+
+
+
 let btn = document.querySelector("#btn");  
 
 btn.addEventListener('click', () => {
@@ -16,7 +19,7 @@ const input_date = document.querySelector("#dateInput").value;
         map.removeLayer('crimes');
         map.removeSource('crimes')
     }
-    const geoJSONcontent = await fetchJSONData();
+const geoJSONcontent = await fetchJSONData();
 console.log(geoJSONcontent)
  const geojson = {
         type: 'FeatureCollection',
@@ -66,6 +69,15 @@ console.log(geoJSONcontent)
       zoom: 3 // starting zoom
     });
 
+    async function filterByCrimeType(geoJSONData) {
+        
+        let crimeTypeFiltered = geoJSONData
+
+
+        return crimeTypeFiltered
+    }
+
+
     //Start of async function that gathers GEOjson data from local file
     async function fetchJSONData() {
     try {
@@ -89,12 +101,96 @@ console.log(geoJSONcontent)
 	 
 	 const image = await map.loadImage('./icon.png');//Grab local star image to be used as icon
      map.addImage('custom-marker', image.data);//Add the image to the map
+     const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
+     //const crimeTypes = [...new Set(geoJSONcontent.map(crime => crime.ofns_desc))];
+       crimeTypes = [] 
+       console.log("geojsoncontent",geoJSONcontent[0].crimeType)
+       geoJSONcontent.forEach(crime => {
+           console.log(crime.crimeType)
+        if(!crimeTypes.includes(crime.crimeType)) {
+            crimeTypes.push(crime.crimeType)
+        }
+
+       })
+        console.log("crime type", crimeTypes)
+        // Create checkbox container
+        const container = document.createElement('div');
+        container.id = 'checkbox-container';
+        //container.style.cssText = 'display: flex; gap: 5px; margin: 10px; width:40%';
+        container.style.cssText = `
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px;
+    padding: 15px;
+    max-width: 300px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 400px;
+    overflow-y: auto;
+    position: absolute;
+    top: 30px;
+    right: 70px;
+    z-index: 1;
+    `;
+ const crimeTypeH3 = document.createElement('h3')
+ crimeTypeH3.textContent = "Filter By Crime Type"
+
+          container.appendChild(crimeTypeH3)
+
+        // Create checkboxes for each crime type
+        crimeTypes.forEach(crimeType => {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = `
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    width: 100%;
+    transition: all 0.2s ease;
+    cursor: pointer;
+`;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = crimeType.replace(/\s+/g, '-').toLowerCase();
+            checkbox.value = crimeType;
+            checkbox.checked = true; // Default to checked
+            checkbox.style.cssText = `
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+`;
+
+            const label = document.createElement('label');
+            label.style.cssText = `
+    margin-left: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+`;
+            label.htmlFor = checkbox.id;
+            label.textContent = crimeType;
+            
+            wrapper.appendChild(checkbox);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+        });
+        
+
+        // Add to document
+        document.body.appendChild(container);
+
+
+     console.log(await filterByCrimeType(geoJSONcontent))
+     const geoJSONcontentFiltered = await filterByCrimeType(geoJSONcontent)
 	 //console.log(input_date)
      console.log("here",geoJSONcontent)
      const geojson = {
             type: 'FeatureCollection',
-            features: geoJSONcontent.map(crime => ({
+            features: geoJSONcontentFiltered.map(crime => ({
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
