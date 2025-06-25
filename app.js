@@ -154,8 +154,11 @@ console.log("!!!", geoJSONcontent[0].date)
     cursor: pointer;
 `;
             const checkbox = document.createElement('input');
+
+	    //wrapper.id = 'checkboxInput';
             checkbox.type = 'checkbox';
             checkbox.id = crimeType.replace(/\s+/g, '-').toLowerCase();
+	    checkbox.classList.add('checkboxInput');
             checkbox.value = crimeType;
             checkbox.checked = true; // Default to checked
             checkbox.style.cssText = `
@@ -177,6 +180,59 @@ console.log("!!!", geoJSONcontent[0].date)
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
             container.appendChild(wrapper);
+
+	checkbox.addEventListener("change", () => {
+	let boxes = document.querySelectorAll('.checkboxInput');
+	let checkedBoxes = Array.from(boxes)
+			.filter(box => box.checked)
+			.map(box => box.value);
+	crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));
+	
+
+	checkedBoxes.forEach(checkedType => {
+		if (!crimeTypes.includes(checkedType)) {
+			crimeTypes.push(checkedType);
+		}
+	})
+	console.log("Updated", crimeTypes)
+		
+	const geoJSONFiltered = {
+        type: 'FeatureCollection',
+        features: geojson.features.filter(feature => {
+                const featureCrimeTypes = feature.properties.crimeType
+                return crimeTypes.includes(featureCrimeTypes)
+
+})
+}
+   if (map.getSource('crimes')){
+       map.removeLayer('crimes');
+       map.removeSource('crimes')
+   }
+
+        map.addSource('crimes', {
+            'type': 'geojson',
+            'data': geoJSONFiltered
+      });
+      map.addLayer({ 
+            'id': 'crimes',
+            'type': 'symbol',
+            'source': 'crimes',
+            'layout': {
+                'icon-image': 'custom-marker',
+                'icon-size': 0.07,
+                // get the year from the source's "year" property
+                'text-field': ['get', 'year'],
+                'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                ],
+                'text-offset': [0, 1.25],
+                'text-anchor': 'top'
+            }
+        });
+
+console.log(geoJSONFiltered)
+	});
         });
         
 
@@ -205,6 +261,19 @@ console.log("!!!", geoJSONcontent[0].date)
                 }
             }))
         };
+
+//	const crimeType = geojson.features[0].properties.crimeType
+	const geoJSONFiltered = {
+		type: 'FeatureCollection',
+		features: geojson.features.filter(feature => {
+			const featureCrimeTypes = feature.properties.crimeType
+			return crimeTypes.includes(featureCrimeTypes)
+
+	})
+	}
+	//console.log("TYPE",crimeType)
+	console.log("TYPES", crimeTypes)
+   	console.log("crime type filtered", geoJSONFiltered) 
         /*
         geojson.features.forEach(feature => {
             const dateString = feature.properties.date
