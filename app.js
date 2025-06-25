@@ -5,7 +5,7 @@ let btn = document.querySelector("#btn");
 
 btn.addEventListener('click', () => {
 const input_date = document.querySelector("#dateInput").value;
-   console.log(input_date) 
+   console.log(input_date)
     fetch('http://localhost:3000/date', {
         method: 'POST',
         headers: {
@@ -20,7 +20,7 @@ const input_date = document.querySelector("#dateInput").value;
         map.removeSource('crimes')
     }
 const geoJSONcontent = await fetchJSONData();
-console.log(geoJSONcontent)
+console.log("!!!", geoJSONcontent[0].date)
  const geojson = {
         type: 'FeatureCollection',
         features: geoJSONcontent.map(crime => ({
@@ -69,13 +69,13 @@ console.log(geoJSONcontent)
       zoom: 3 // starting zoom
     });
 
-    async function filterByCrimeType(geoJSONData) {
+/*   async function filterByCrimeType(geoJSONData) {
         
         let crimeTypeFiltered = geoJSONData
 
 
         return crimeTypeFiltered
-    }
+    }*/
 
 
     //Start of async function that gathers GEOjson data from local file
@@ -184,13 +184,13 @@ console.log(geoJSONcontent)
         document.body.appendChild(container);
 
 
-     console.log(await filterByCrimeType(geoJSONcontent))
-     const geoJSONcontentFiltered = await filterByCrimeType(geoJSONcontent)
+     //console.log(await filterByCrimeType(geoJSONcontent))
+     //const geoJSONcontentFiltered = await filterByCrimeType(geoJSONcontent)
 	 //console.log(input_date)
      console.log("here",geoJSONcontent)
      const geojson = {
             type: 'FeatureCollection',
-            features: geoJSONcontentFiltered.map(crime => ({
+            features: geoJSONcontent.map(crime => ({
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
@@ -254,13 +254,12 @@ console.log(geoJSONcontent)
             }
         });
         });
-        
+	        
         // Create a popup, but don't add it to the map yet.
         const popup = new maplibregl.Popup({
             closeButton: false,
             closeOnClick: false
         });
-
         // Make sure to detect marker change for overlapping markers
         // and use mousemove instead of mouseenter event
         let currentFeatureCoordinates = undefined;
@@ -275,7 +274,10 @@ console.log(geoJSONcontent)
 
                 const crimeType = e.features[0].properties.crimeType
                 const coordinates = e.features[0].geometry.coordinates;
-
+		let crimeDate = e.features[0].properties.date
+		let cut = crimeDate.indexOf("T");
+		crimeDate = crimeDate.substring(0, cut)
+		console.log("crime date",crimeDate)
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
                 // over the copy being pointed to.
@@ -284,7 +286,8 @@ console.log(geoJSONcontent)
                 }
         const popupContent = `
             <strong>Crime:</strong> ${crimeType}<br>
-            <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}    
+            <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
+	    <strong>Date:</strong> ${crimeDate} 
                 `;
                 // Populate the popup and set its coordinates
                 // based on the feature found.
@@ -292,6 +295,7 @@ console.log(geoJSONcontent)
                 popup.setLngLat(coordinates).setHTML(popupContent).addTo(map);
             }
         });
+console.log()
 const geocoderApi = {
         forwardGeocode: async (config) => {
             const features = [];
