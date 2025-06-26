@@ -137,8 +137,11 @@ console.log("!!!", geoJSONcontent[0].date)
     `;
  const crimeTypeH3 = document.createElement('h3')
  crimeTypeH3.textContent = "Filter By Crime Type"
-
+const checkAll = document.createElement('button')
+checkAll.textContent = "Check / Uncheck All"
           container.appendChild(crimeTypeH3)
+	  container.appendChild(checkAll)
+
 
         // Create checkboxes for each crime type
         crimeTypes.forEach(crimeType => {
@@ -180,6 +183,67 @@ console.log("!!!", geoJSONcontent[0].date)
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
             container.appendChild(wrapper);
+        checkAll.addEventListener('click', () => {
+                //let box = document.querySelectorAll('.checkboxInput');
+
+		let boxes = document.querySelectorAll('.checkboxInput');
+		boxes.forEach((element) => {
+			if (element.checked === true){
+			element.checked = false
+		}else{
+			element.checked = true
+		}})
+
+let checkedBoxes = Array.from(boxes)
+                .filter(box => box.checked)
+                .map(box => box.value);
+crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));
+
+
+checkedBoxes.forEach(checkedType => {
+        if (!crimeTypes.includes(checkedType)) {
+                crimeTypes.push(checkedType);
+        }
+})
+
+                //console.log(box)
+		//box.checked = false;
+        const geoJSONFiltered = {
+        type: 'FeatureCollection',
+        features: geojson.features.filter(feature => {
+                const featureCrimeTypes = feature.properties.crimeType
+                return crimeTypes.includes(featureCrimeTypes)
+
+})
+}
+   if (map.getSource('crimes')){
+       map.removeLayer('crimes');
+       map.removeSource('crimes')
+   }
+
+        map.addSource('crimes', {
+            'type': 'geojson',
+            'data': geoJSONFiltered
+      });
+      map.addLayer({
+            'id': 'crimes',
+            'type': 'symbol',
+            'source': 'crimes',
+            'layout': {
+                'icon-image': 'custom-marker',
+                'icon-size': 0.07,
+                // get the year from the source's "year" property
+                'text-field': ['get', 'year'],
+                'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                ],
+                'text-offset': [0, 1.25],
+                'text-anchor': 'top'
+            }
+        });
+		
+})
 
 	checkbox.addEventListener("change", () => {
 	let boxes = document.querySelectorAll('.checkboxInput');
