@@ -1,31 +1,46 @@
 let btn = document.querySelector("#btn");  
-
+let newColor = '';
 function updateMap(geojsonInput) {
 	if (map.getSource('crimes')){
-       		map.removeLayer('crimes');
-       		map.removeSource('crimes')
-   }
+		map.removeLayer('crimes-circles');
+		map.removeLayer('crimes-labels');
+   		map.removeSource('crimes');
+	}
        map.addSource('crimes', {
            'type': 'geojson',
            'data': geojsonInput
      });
-     map.addLayer({ 
-           'id': 'crimes',
-           'type': 'symbol',
-           'source': 'crimes',
-           'layout': { 
-               'icon-image': 'custom-marker',
-               'icon-size': 0.07,
-               // get the year from the source's "year" property
-               'text-field': ['get', 'year'],
-               'text-font': [ 
-                   'Open Sans Semibold',
-                   'Arial Unicode MS Bold'
-               ],
-               'text-offset': [0, 1.25],
-               'text-anchor': 'top'
-           } 
-       });
+
+
+// Add circles
+map.addLayer({
+    'id': 'crimes-circles',
+    'type': 'circle',
+    'source': 'crimes',
+    'paint': {
+        'circle-radius': 6,
+        'circle-color': '#ff0000',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#ffffff'
+    }
+});
+
+// Add labels
+map.addLayer({
+    'id': 'crimes-labels',
+    'type': 'symbol',
+    'source': 'crimes',
+    'layout': {
+        'text-field': ['get', 'year'],
+        'text-font': [
+            'Open Sans Semibold',
+            'Arial Unicode MS Bold'
+        ],
+        'text-offset': [0, 1.25],
+        'text-anchor': 'top'
+    }
+});
+
 }
 
 btn.addEventListener('click', () => {
@@ -86,13 +101,17 @@ const geojson = {
 }
 
 //End of async function
+function randomColorGen() {
+	const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+	return "#" + randomColor.padStart(6, '0');
 
+}
 //Load map function, start on page load    
     map.on('load', async () => {
       // const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
 	 
-	 const image = await map.loadImage('./icon.png');//Grab local star image to be used as icon
-     map.addImage('custom-marker', image.data);//Add the image to the map
+//	 const image = await map.loadImage('./icon.png');//Grab local star image to be used as icon
+     //map.addImage('custom-marker', image.data);//Add the image to the map
      const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
      //const crimeTypes = [...new Set(geoJSONcontent.map(crime => crime.ofns_desc))];
@@ -148,6 +167,7 @@ checkAll.textContent = "Check / Uncheck All"
     transition: all 0.2s ease;
     cursor: pointer;
 `;
+	wrapper.classList.add('crime-wrapper');
             const checkbox = document.createElement('input');
 
 	    //wrapper.id = 'checkboxInput';
@@ -171,45 +191,18 @@ checkAll.textContent = "Check / Uncheck All"
 `;
             label.htmlFor = checkbox.id;
             label.textContent = crimeType;
-            
+           
+
+	const colorDot = document.createElement('span');
+	colorDot.classList.add('colorDot');
+	
+	colorDot.style.color = randomColorGen()
+
+
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
-            container.appendChild(wrapper);
-        checkAll.addEventListener('click', () => {
-                //let box = document.querySelectorAll('.checkboxInput');
-
-		let boxes = document.querySelectorAll('.checkboxInput');
-		boxes.forEach((element) => {
-			if (element.checked === true){
-			element.checked = false
-		}else{
-			element.checked = true
-		}})
-
-let checkedBoxes = Array.from(boxes)
-                .filter(box => box.checked)
-                .map(box => box.value);
-crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));
-
-
-checkedBoxes.forEach(checkedType => {
-        if (!crimeTypes.includes(checkedType)) {
-                crimeTypes.push(checkedType);
-        }
-})
-
-                //console.log(box)
-		//box.checked = false;
-        const geoJSONFiltered = {
-        type: 'FeatureCollection',
-        features: geojson.features.filter(feature => {
-                const featureCrimeTypes = feature.properties.crimeType
-                return crimeTypes.includes(featureCrimeTypes)
-
-})
-}
-	updateMap(geoJSONFiltered)		
-})
+            wrapper.appendChild(colorDot);
+	    container.appendChild(wrapper);
 
 	checkbox.addEventListener("change", () => {
 	let boxes = document.querySelectorAll('.checkboxInput');
@@ -238,6 +231,32 @@ checkedBoxes.forEach(checkedType => {
 	});
         });
         
+        checkAll.addEventListener('click', () => {
+                let boxes = document.querySelectorAll('.checkboxInput');
+                boxes.forEach((element) => {
+                        if (element.checked === false){
+                        element.checked = true
+                        console.log(element.checked)
+                }else{
+                        element.checked = false
+                        console.log(element.checked)
+                }})
+
+crimeTypes = Array.from(boxes)
+                .filter(box => box.checked)
+                .map(box => box.value);
+                //console.log(box)
+                //box.checked = false;
+        const geoJSONFiltered = {
+        type: 'FeatureCollection',
+        features: geojson.features.filter(feature => {
+                const featureCrimeTypes = feature.properties.crimeType
+                return crimeTypes.includes(featureCrimeTypes)
+
+})
+}
+        updateMap(geoJSONFiltered)
+})
 
         // Add to document
         document.body.appendChild(container);
@@ -261,27 +280,57 @@ checkedBoxes.forEach(checkedType => {
             }))
         };
 
-      map.addSource('crimes', {
+const colorMapping = {};
+const crimeWrapper = document.querySelector('#checkbox-container');
+const colorDots = crimeWrapper.querySelectorAll('.colorDot');
+
+colorDots.forEach(dot => {
+    const crimeType = dot.style.color; // Adjust selector as needed
+    colorMapping[crimeType] = crimeType;
+});
+console.log(colorMapping)
+
+
+map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
       });
-      map.addLayer({
-            'id': 'crimes',
-            'type': 'symbol',
-            'source': 'crimes',
-            'layout': {
-                'icon-image': 'custom-marker',
-                'icon-size': 0.07,
-                // get the year from the source's "year" property
-                'text-field': ['get', 'year'],
-                'text-font': [
-                    'Open Sans Semibold',
-                    'Arial Unicode MS Bold'
-                ],
-                'text-offset': [0, 1.25],
-                'text-anchor': 'top'
-            }
-        });
+
+
+// Add circles
+map.addLayer({
+    'id': 'crimes-circles',
+    'type': 'circle',
+    'source': 'crimes',
+    'paint': {
+        'circle-radius': 6,
+        'circle-color': [
+            'match',
+            ['get', 'crimeType'], // Make sure this matches your GeoJSON property name
+            ...Object.entries(colorMapping).flatMap(([type, color]) => [type, color]),
+            '#CCCCCC' // default color if no match
+        ],
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#ffffff'
+    }
+});
+
+// Add labels
+map.addLayer({
+    'id': 'crimes-labels',
+    'type': 'symbol',
+    'source': 'crimes',
+    'layout': {
+        'text-field': ['get', 'year'],
+        'text-font': [
+            'Open Sans Semibold',
+            'Arial Unicode MS Bold'
+        ],
+        'text-offset': [0, 1.25],
+        'text-anchor': 'top'
+    }
+});
+
         });
 	        
         // Create a popup, but don't add it to the map yet.
@@ -292,7 +341,7 @@ checkedBoxes.forEach(checkedType => {
         // Make sure to detect marker change for overlapping markers
         // and use mousemove instead of mouseenter event
         let currentFeatureCoordinates = undefined;
-        map.on('mousemove', 'crimes', (e) => {
+        map.on('mousemove', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;
             //console.log(featureCoordinates)
             if (currentFeatureCoordinates !== featureCoordinates) {
@@ -370,7 +419,7 @@ const geocoderApi = {
         })
     );
 
-        map.on('mouseleave', 'crimes', () => {
+        map.on('mouseleave', 'crimes-circles', () => {
             currentFeatureCoordinates = undefined;
             map.getCanvas().style.cursor = '';
             popup.remove();
