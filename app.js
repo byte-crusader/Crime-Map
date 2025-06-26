@@ -1,7 +1,32 @@
-
-
-
 let btn = document.querySelector("#btn");  
+
+function updateMap(geojsonInput) {
+	if (map.getSource('crimes')){
+       		map.removeLayer('crimes');
+       		map.removeSource('crimes')
+   }
+       map.addSource('crimes', {
+           'type': 'geojson',
+           'data': geojsonInput
+     });
+     map.addLayer({ 
+           'id': 'crimes',
+           'type': 'symbol',
+           'source': 'crimes',
+           'layout': { 
+               'icon-image': 'custom-marker',
+               'icon-size': 0.07,
+               // get the year from the source's "year" property
+               'text-field': ['get', 'year'],
+               'text-font': [ 
+                   'Open Sans Semibold',
+                   'Arial Unicode MS Bold'
+               ],
+               'text-offset': [0, 1.25],
+               'text-anchor': 'top'
+           } 
+       });
+}
 
 btn.addEventListener('click', () => {
 const input_date = document.querySelector("#dateInput").value;
@@ -15,13 +40,9 @@ const input_date = document.querySelector("#dateInput").value;
     })
     .then(response => response.json())
     .then(async data => {
-    if (map.getSource('crimes')){
-        map.removeLayer('crimes');
-        map.removeSource('crimes')
-    }
 const geoJSONcontent = await fetchJSONData();
-console.log("!!!", geoJSONcontent[0].date)
- const geojson = {
+ 
+const geojson = {
         type: 'FeatureCollection',
         features: geoJSONcontent.map(crime => ({
             type: 'Feature',
@@ -38,27 +59,8 @@ console.log("!!!", geoJSONcontent[0].date)
             } 
         }))
     };
-        map.addSource('crimes', { 
-            'type': 'geojson', 
-            'data': geojson 
-      }); 
-      map.addLayer({ 
-            'id': 'crimes', 
-            'type': 'symbol', 
-            'source': 'crimes', 
-            'layout': { 
-                'icon-image': 'custom-marker', 
-                'icon-size': 0.07, 
-                // get the year from the source's "year" property
-                'text-field': ['get', 'year'], 
-                'text-font': [ 
-                    'Open Sans Semibold', 
-                    'Arial Unicode MS Bold' 
-                ], 
-                'text-offset': [0, 1.25], 
-                'text-anchor': 'top' 
-            } 
-        });
+	updateMap(geojson)
+
     });
 });
 
@@ -68,16 +70,6 @@ console.log("!!!", geoJSONcontent[0].date)
       center: [0, 0], // starting position [lng, lat]
       zoom: 3 // starting zoom
     });
-
-/*   async function filterByCrimeType(geoJSONData) {
-        
-        let crimeTypeFiltered = geoJSONData
-
-
-        return crimeTypeFiltered
-    }*/
-
-
     //Start of async function that gathers GEOjson data from local file
     async function fetchJSONData() {
     try {
@@ -216,33 +208,7 @@ checkedBoxes.forEach(checkedType => {
 
 })
 }
-   if (map.getSource('crimes')){
-       map.removeLayer('crimes');
-       map.removeSource('crimes')
-   }
-
-        map.addSource('crimes', {
-            'type': 'geojson',
-            'data': geoJSONFiltered
-      });
-      map.addLayer({
-            'id': 'crimes',
-            'type': 'symbol',
-            'source': 'crimes',
-            'layout': {
-                'icon-image': 'custom-marker',
-                'icon-size': 0.07,
-                // get the year from the source's "year" property
-                'text-field': ['get', 'year'],
-                'text-font': [
-                    'Open Sans Semibold',
-                    'Arial Unicode MS Bold'
-                ],
-                'text-offset': [0, 1.25],
-                'text-anchor': 'top'
-            }
-        });
-		
+	updateMap(geoJSONFiltered)		
 })
 
 	checkbox.addEventListener("change", () => {
@@ -268,34 +234,7 @@ checkedBoxes.forEach(checkedType => {
 
 })
 }
-   if (map.getSource('crimes')){
-       map.removeLayer('crimes');
-       map.removeSource('crimes')
-   }
-
-        map.addSource('crimes', {
-            'type': 'geojson',
-            'data': geoJSONFiltered
-      });
-      map.addLayer({ 
-            'id': 'crimes',
-            'type': 'symbol',
-            'source': 'crimes',
-            'layout': {
-                'icon-image': 'custom-marker',
-                'icon-size': 0.07,
-                // get the year from the source's "year" property
-                'text-field': ['get', 'year'],
-                'text-font': [
-                    'Open Sans Semibold',
-                    'Arial Unicode MS Bold'
-                ],
-                'text-offset': [0, 1.25],
-                'text-anchor': 'top'
-            }
-        });
-
-console.log(geoJSONFiltered)
+	updateMap(geoJSONFiltered)
 	});
         });
         
@@ -304,10 +243,6 @@ console.log(geoJSONFiltered)
         document.body.appendChild(container);
 
 
-     //console.log(await filterByCrimeType(geoJSONcontent))
-     //const geoJSONcontentFiltered = await filterByCrimeType(geoJSONcontent)
-	 //console.log(input_date)
-     console.log("here",geoJSONcontent)
      const geojson = {
             type: 'FeatureCollection',
             features: geoJSONcontent.map(crime => ({
@@ -325,45 +260,6 @@ console.log(geoJSONFiltered)
                 }
             }))
         };
-
-//	const crimeType = geojson.features[0].properties.crimeType
-	const geoJSONFiltered = {
-		type: 'FeatureCollection',
-		features: geojson.features.filter(feature => {
-			const featureCrimeTypes = feature.properties.crimeType
-			return crimeTypes.includes(featureCrimeTypes)
-
-	})
-	}
-	//console.log("TYPE",crimeType)
-	console.log("TYPES", crimeTypes)
-   	console.log("crime type filtered", geoJSONFiltered) 
-        /*
-        geojson.features.forEach(feature => {
-            const dateString = feature.properties.date
-            const dateObject = new Date(dateString)
-            feature.properties.date = dateObject
-        })  
-
-
-        const inputDateFormated = formatDate(input_date)
-        const crimeDate = geojson.features[0].properties.date.toLocaleDateString()
-
-    const geoJSONFiltered = {
-        type: 'FeatureCollection',
-        features: geojson.features.filter(feature => {
-            return crimeDate === inputDateFormated;
-        })
-    };
-        //To loop through all the data in the json
-        console.log(geojson.features[0].properties.date.toLocaleDateString())
-        function formatDate(userDate){
-            const [year, month, day] = userDate.split('-')
-            return `${month}/${day}/${year}`
-        }*/
-        // 2024-12-31T00:00:00.000 separation of concerns
-        // section the code into functions 
-
 
       map.addSource('crimes', {
             'type': 'geojson',
@@ -428,7 +324,6 @@ console.log(geoJSONFiltered)
                 popup.setLngLat(coordinates).setHTML(popupContent).addTo(map);
             }
         });
-console.log()
 const geocoderApi = {
         forwardGeocode: async (config) => {
             const features = [];
