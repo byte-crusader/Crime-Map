@@ -222,13 +222,6 @@ checkAll.textContent = "Check / Uncheck All"
 	crimeTypes  = Array.from(boxes)
 			.filter(box => box.checked)
 			.map(box => box.value);
-	//crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));	
-	//checkedBoxes.forEach(checkedType => {
-	//	if (!crimeTypes.includes(checkedType)) {
-	//		crimeTypes.push(checkedType);
-	//	}
-	//})
-		
 	const geoJSONFiltered = {
         type: 'FeatureCollection',
         features: geojson.features.filter(feature => {
@@ -237,8 +230,16 @@ checkAll.textContent = "Check / Uncheck All"
 
 })
 }
-	
-	updateMap(geoJSONFiltered)
+	    map.getSource('crimes').setData(geoJSONFiltered);
+
+    // Make sure the layer paint property uses the color dictionary
+    map.setPaintProperty('crimes-circles', 'circle-color', [
+        'match',
+        ['get', 'crimeType'],
+        ...Object.entries(crimeColorDict).flat(),
+        '#999999'  // default color
+    ]);
+	//updateMap(geoJSONFiltered)
 	});
         });
         checkAll.addEventListener('click', () => {
@@ -268,6 +269,7 @@ crimeTypes = Array.from(boxes)
         document.body.appendChild(container);
 
 
+     const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
      const geojson = {
             type: 'FeatureCollection',
             features: geoJSONcontent.map(crime => ({
@@ -286,7 +288,6 @@ crimeTypes = Array.from(boxes)
             }))
         };
 
-const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
 map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
