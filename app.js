@@ -1,53 +1,5 @@
 let btn = document.querySelector("#btn");  
 let newColor = '';
-// Refresh the map wtih the new information
-function updateMap(geojsonInput) {
-	if (map.getSource('crimes')){
-		map.removeLayer('crimes-circles');
-		map.removeLayer('crimes-labels');
-   		map.removeSource('crimes');
-	}
-       map.addSource('crimes', {
-           'type': 'geojson',
-           'data': geojsonInput
-     });
-
-
-// Add circles
-map.addLayer({
-    'id': 'crimes-circles',
-    'type': 'circle',
-    'source': 'crimes',
-    'paint': {
-        'circle-radius': 6,
-        'circle-color': [
-                'match', 
-        ['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
-            ...crimeTypes.map((type, index) => [type, colorArr[index]]).flat(),
-            '#999999',
-        ],  
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff'
-    }
-});     
-
-// Add labels
-map.addLayer({
-    'id': 'crimes-labels',
-    'type': 'symbol',
-    'source': 'crimes',
-    'layout': {
-        'text-field': ['get', 'year'],
-        'text-font': [
-            'Open Sans Semibold',
-            'Arial Unicode MS Bold'
-        ],
-        'text-offset': [0, 1.25],
-        'text-anchor': 'top'
-    }
-});
-
-}
 
 function createCrimeColors(colorData, crimeData) {
 	let dict = {}
@@ -327,6 +279,53 @@ map.addLayer({
         'text-anchor': 'top'
     }
 });
+function updateMap(geojsonInput) {
+        if (map.getSource('crimes')){
+                map.removeLayer('crimes-circles');
+                map.removeLayer('crimes-labels');
+                map.removeSource('crimes');
+        }
+       map.addSource('crimes', {
+           'type': 'geojson',
+           'data': geojsonInput
+     });
+
+
+// Add circles
+map.addLayer({
+    'id': 'crimes-circles',
+    'type': 'circle',
+    'source': 'crimes',
+    'paint': {
+        'circle-radius': 6,
+        'circle-color': [
+                'match',
+        ['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
+            ...Object.entries(crimeColorDict).flat(),
+            '#999999',
+        ],
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#ffffff'
+    }
+});
+
+// Add labels
+map.addLayer({
+    'id': 'crimes-labels',
+    'type': 'symbol',
+    'source': 'crimes',
+    'layout': {
+        'text-field': ['get', 'year'],
+        'text-font': [
+            'Open Sans Semibold',
+            'Arial Unicode MS Bold'
+        ],
+        'text-offset': [0, 1.25],
+        'text-anchor': 'top'
+    }
+});     
+        
+}               
 
         });
 	        
