@@ -19,11 +19,16 @@ map.addLayer({
     'source': 'crimes',
     'paint': {
         'circle-radius': 6,
-        'circle-color': '#ff0000',
+        'circle-color': [
+                'match', 
+        ['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
+            ...crimeTypes.map((type, index) => [type, colorArr[index]]).flat(),
+            '#999999',
+        ],  
         'circle-stroke-width': 1,
         'circle-stroke-color': '#ffffff'
     }
-});
+});     
 
 // Add labels
 map.addLayer({
@@ -106,6 +111,8 @@ function randomColorGen() {
 	return "#" + randomColor.padStart(6, '0');
 
 }
+let colorArr = []
+let colorCount = 0
 //Load map function, start on page load    
     map.on('load', async () => {
       // const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
@@ -195,9 +202,10 @@ checkAll.textContent = "Check / Uncheck All"
 
 	const colorDot = document.createElement('span');
 	colorDot.classList.add('colorDot');
-	
-	colorDot.style.color = randomColorGen()
+	colorArr.push(randomColorGen())
+	colorDot.style.color = colorArr[colorCount]
 
+	colorCount++
 
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
@@ -280,17 +288,6 @@ crimeTypes = Array.from(boxes)
             }))
         };
 
-const colorMapping = {};
-const crimeWrapper = document.querySelector('#checkbox-container');
-const colorDots = crimeWrapper.querySelectorAll('.colorDot');
-
-colorDots.forEach(dot => {
-    const crimeType = dot.style.color; // Adjust selector as needed
-    colorMapping[crimeType] = crimeType;
-});
-console.log(colorMapping)
-
-
 map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
@@ -305,11 +302,11 @@ map.addLayer({
     'paint': {
         'circle-radius': 6,
         'circle-color': [
-            'match',
-            ['get', 'crimeType'], // Make sure this matches your GeoJSON property name
-            ...Object.entries(colorMapping).flatMap(([type, color]) => [type, color]),
-            '#CCCCCC' // default color if no match
-        ],
+		'match',
+	['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
+            ...crimeTypes.map((type, index) => [type, colorArr[index]]).flat(),
+            '#999999', 
+	],
         'circle-stroke-width': 1,
         'circle-stroke-color': '#ffffff'
     }
