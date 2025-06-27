@@ -76,13 +76,8 @@ let colorArr = []
 let colorCount = 0
 //Load map function, start on page load    
     map.on('load', async () => {
-      // const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/osgeo-logo.png');
-	 
-//	 const image = await map.loadImage('./icon.png');//Grab local star image to be used as icon
-     //map.addImage('custom-marker', image.data);//Add the image to the map
      const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
-     //const crimeTypes = [...new Set(geoJSONcontent.map(crime => crime.ofns_desc))];
        crimeTypes = [] 
        geoJSONcontent.forEach(crime => {
         if(!crimeTypes.includes(crime.crimeType)) {
@@ -300,7 +295,7 @@ map.addLayer({
         'circle-radius': 6,
         'circle-color': [
                 'match',
-        ['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
+        ['get', 'crimeType'], 
             ...Object.entries(crimeColorDict).flat(),
             '#999999',
         ],
