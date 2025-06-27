@@ -60,7 +60,6 @@ function createCrimeColors(colorData, crimeData) {
 // Make post request to the backend and send updated date information for filtering after button is clicked
 btn.addEventListener('click', () => {
 const input_date = document.querySelector("#dateInput").value;
-   console.log(input_date)
     fetch('http://localhost:3000/date', {
         method: 'POST',
         headers: {
@@ -133,15 +132,12 @@ let colorCount = 0
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
      //const crimeTypes = [...new Set(geoJSONcontent.map(crime => crime.ofns_desc))];
        crimeTypes = [] 
-       console.log("geojsoncontent",geoJSONcontent[0].crimeType)
        geoJSONcontent.forEach(crime => {
-           console.log(crime.crimeType)
         if(!crimeTypes.includes(crime.crimeType)) {
             crimeTypes.push(crime.crimeType)
         }
 
        })
-        console.log("crime type", crimeTypes)
         // Create checkbox container
         const container = document.createElement('div');
         container.id = 'checkbox-container';
@@ -232,7 +228,6 @@ checkAll.textContent = "Check / Uncheck All"
 	//		crimeTypes.push(checkedType);
 	//	}
 	//})
-	console.log("Updated", crimeTypes)
 		
 	const geoJSONFiltered = {
         type: 'FeatureCollection',
@@ -251,17 +246,13 @@ checkAll.textContent = "Check / Uncheck All"
                 boxes.forEach((element) => {
                         if (element.checked === false){
                         element.checked = true
-                        console.log(element.checked)
                 }else{
                         element.checked = false
-                        console.log(element.checked)
                 }})
 
 crimeTypes = Array.from(boxes)
                 .filter(box => box.checked)
                 .map(box => box.value);
-                //console.log(box)
-                //box.checked = false;
         const geoJSONFiltered = {
         type: 'FeatureCollection',
         features: geojson.features.filter(feature => {
@@ -348,7 +339,6 @@ map.addLayer({
         let currentFeatureCoordinates = undefined;
         map.on('mousemove', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;
-            //console.log(featureCoordinates)
             if (currentFeatureCoordinates !== featureCoordinates) {
                 currentFeatureCoordinates = featureCoordinates;
 
@@ -360,7 +350,6 @@ map.addLayer({
 		let crimeDate = e.features[0].properties.date
 		let cut = crimeDate.indexOf("T");
 		crimeDate = crimeDate.substring(0, cut)
-		console.log("crime date",crimeDate)
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
                 // over the copy being pointed to.
