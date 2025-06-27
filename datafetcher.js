@@ -43,7 +43,6 @@ fastify.get('/crimes', async (request, reply) => {
             longitude: crime.longitude,
             latitude: crime.latitude
         }));
-        console.log(filteredData)
         return filteredData
     }catch (error){
         console.log(error.message)

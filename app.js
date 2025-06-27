@@ -8,43 +8,7 @@ function createCrimeColors(colorData, crimeData) {
 	}
 	return dict
 }
-
-// Make post request to the backend and send updated date information for filtering after button is clicked
-btn.addEventListener('click', () => {
-const input_date = document.querySelector("#dateInput").value;
-    fetch('http://localhost:3000/date', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({date: input_date })
-    })
-    .then(response => response.json())
-    .then(async data => {
-const geoJSONcontent = await fetchJSONData();
- 
-const geojson = {
-        type: 'FeatureCollection',
-        features: geoJSONcontent.map(crime => ({
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [ 
-                    parseFloat(crime.longitude),
-                    parseFloat(crime.latitude)
-                ]
-            },
-            properties: {
-                date: crime.date,
-                crimeType: crime.crimeType
-            } 
-        }))
-    };
-	updateMap(geojson)
-
-    });
-});
-
+// Create map object, set map starting point
     var map = new maplibregl.Map({
       container: 'map',
       style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // stylesheet location
@@ -274,6 +238,42 @@ map.addLayer({
         'text-anchor': 'top'
     }
 });
+// Make post request to the backend and send updated date information for filtering after button is clicked
+btn.addEventListener('click', () => {
+const input_date = document.querySelector("#dateInput").value;
+    fetch('http://localhost:3000/date', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({date: input_date })
+    })
+    .then(response => response.json())
+    .then(async data => {
+const geoJSONcontent = await fetchJSONData();
+
+const geojson = {
+        type: 'FeatureCollection',
+        features: geoJSONcontent.map(crime => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [
+                    parseFloat(crime.longitude),
+                    parseFloat(crime.latitude)
+                ]
+            },
+            properties: {
+                date: crime.date,
+                crimeType: crime.crimeType
+            }
+        }))
+    };
+        updateMap(geojson)
+
+    });
+});
+
 function updateMap(geojsonInput) {
         if (map.getSource('crimes')){
                 map.removeLayer('crimes-circles');
