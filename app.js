@@ -1,5 +1,6 @@
 let btn = document.querySelector("#btn");  
 let newColor = '';
+// Refresh the map wtih the new information
 function updateMap(geojsonInput) {
 	if (map.getSource('crimes')){
 		map.removeLayer('crimes-circles');
@@ -48,6 +49,15 @@ map.addLayer({
 
 }
 
+function createCrimeColors(colorData, crimeData) {
+	let dict = {}
+	for(let i = 0; i < colorData.length; i++){
+		dict[crimeData[i]] = colorData[i]
+	}
+	return dict
+}
+
+// Make post request to the backend and send updated date information for filtering after button is clicked
 btn.addEventListener('click', () => {
 const input_date = document.querySelector("#dateInput").value;
    console.log(input_date)
@@ -204,7 +214,6 @@ checkAll.textContent = "Check / Uncheck All"
 	colorDot.classList.add('colorDot');
 	colorArr.push(randomColorGen())
 	colorDot.style.color = colorArr[colorCount]
-
 	colorCount++
 
             wrapper.appendChild(checkbox);
@@ -214,31 +223,29 @@ checkAll.textContent = "Check / Uncheck All"
 
 	checkbox.addEventListener("change", () => {
 	let boxes = document.querySelectorAll('.checkboxInput');
-	let checkedBoxes = Array.from(boxes)
+	crimeTypes  = Array.from(boxes)
 			.filter(box => box.checked)
 			.map(box => box.value);
-	crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));
-	
-
-	checkedBoxes.forEach(checkedType => {
-		if (!crimeTypes.includes(checkedType)) {
-			crimeTypes.push(checkedType);
-		}
-	})
+	//crimeTypes = crimeTypes.filter(crimeType => checkedBoxes.includes(crimeType));	
+	//checkedBoxes.forEach(checkedType => {
+	//	if (!crimeTypes.includes(checkedType)) {
+	//		crimeTypes.push(checkedType);
+	//	}
+	//})
 	console.log("Updated", crimeTypes)
 		
 	const geoJSONFiltered = {
         type: 'FeatureCollection',
         features: geojson.features.filter(feature => {
-                const featureCrimeTypes = feature.properties.crimeType
-                return crimeTypes.includes(featureCrimeTypes)
+//                const featureCrimeTypes = feature.properties.crimeType
+                return crimeTypes.includes(feature.properties.crimeType)
 
 })
 }
+	
 	updateMap(geoJSONFiltered)
 	});
         });
-        
         checkAll.addEventListener('click', () => {
                 let boxes = document.querySelectorAll('.checkboxInput');
                 boxes.forEach((element) => {
@@ -288,6 +295,7 @@ crimeTypes = Array.from(boxes)
             }))
         };
 
+const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
 map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
@@ -303,8 +311,8 @@ map.addLayer({
         'circle-radius': 6,
         'circle-color': [
 		'match',
-	['get', 'crimeType'],  // assuming 'crimeType' is your property name in the GeoJSON
-            ...crimeTypes.map((type, index) => [type, colorArr[index]]).flat(),
+	['get', 'crimeType'],
+            ...Object.entries(crimeColorDict).flat(),
             '#999999', 
 	],
         'circle-stroke-width': 1,
