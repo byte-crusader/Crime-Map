@@ -1,5 +1,4 @@
 let btn = document.querySelector("#btn");  
-let newColor = '';
 
 function createCrimeColors(colorData, crimeData) {
 	let dict = {}
@@ -128,11 +127,31 @@ checkAll.textContent = "Check / Uncheck All"
             wrapper.appendChild(colorDot);
 	    container.appendChild(wrapper);
 
-	checkbox.addEventListener("change", () => {
+	checkbox.addEventListener("change", async () => {
 	let boxes = document.querySelectorAll('.checkboxInput');
 	crimeTypes  = Array.from(boxes)
 			.filter(box => box.checked)
 			.map(box => box.value);
+const geoJSONcontent = await  fetchJSONData();
+        
+const geojson = {
+        type: 'FeatureCollection',
+        features: geoJSONcontent.map(crime => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [
+                    parseFloat(crime.longitude),
+                    parseFloat(crime.latitude)
+                ]
+            },
+            properties: {
+                date: crime.date,
+                crimeType: crime.crimeType
+            }
+        }))
+    };
+
 	const geoJSONFiltered = {
         type: 'FeatureCollection',
         features: geojson.features.filter(feature => {
@@ -141,8 +160,9 @@ checkAll.textContent = "Check / Uncheck All"
 
 })
 }
-	    map.getSource('crimes').setData(geoJSONFiltered);
 
+	updateMap(geoJSONFiltered)
+	map.getSource('crimes').setData(geoJSONFiltered);
     // Make sure the layer paint property uses the color dictionary
     map.setPaintProperty('crimes-circles', 'circle-color', [
         'match',
@@ -150,7 +170,8 @@ checkAll.textContent = "Check / Uncheck All"
         ...Object.entries(crimeColorDict).flat(),
         '#999999'  // default color
     ]);
-	//updateMap(geoJSONFiltered)
+	//console.log(geojson)
+	//console.log(geoJSONFiltered)
 	});
         });
         checkAll.addEventListener('click', () => {
@@ -172,7 +193,7 @@ crimeTypes = Array.from(boxes)
                 return crimeTypes.includes(featureCrimeTypes)
 
 })
-}
+}	
         updateMap(geoJSONFiltered)
 })
 
