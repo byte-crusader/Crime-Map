@@ -45,16 +45,16 @@ fastify.get('/crimes', async (request, reply) => {
             longitude: crime.longitude,
             latitude: crime.latitude
         }));
-const filteredData1 = data1.map(crime => ({
+	const filteredData1 = data1.map(crime => ({
     	  date: crime.offense_date,
     	  crimeType: crime.offense_sub_category,
     	  longitude: crime.longitude,
     	  latitude: crime.latitude
 	}));
 
-	filteredData.push(filteredData1)
-	console.log(filteredData1)
-        return filteredData
+	const combined = [...filteredData, ...filteredData1];
+	//console.log(combined)
+        return combined
     }catch (error){
         console.log(error.message)
         return [];

@@ -41,6 +41,7 @@ let colorCount = 0
     map.on('load', async () => {
      const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
+	console.log(geoJSONcontent)
        crimeTypes = [] 
        geoJSONcontent.forEach(crime => {
         if(!crimeTypes.includes(crime.crimeType)) {
@@ -59,7 +60,7 @@ let colorCount = 0
     margin: 15px;
     padding: 15px;
     max-width: 300px;
-    background-color: #f5f5f5;
+    background-color: black;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     max-height: 400px;
@@ -84,7 +85,7 @@ checkAll.textContent = "Check / Uncheck All"
     display: flex;
     align-items: center;
     padding: 8px;
-    background: white;
+    background: black;
     border-radius: 4px;
     width: 100%;
     transition: all 0.2s ease;
@@ -110,7 +111,7 @@ checkAll.textContent = "Check / Uncheck All"
     margin-left: 8px;
     font-family: Arial, sans-serif;
     font-size: 14px;
-    color: #333;
+    color: limegreen;
 `;
             label.htmlFor = checkbox.id;
             label.textContent = crimeType;
