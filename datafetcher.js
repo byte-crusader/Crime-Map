@@ -2,6 +2,11 @@
 // ESM
 //import Fastify from 'fastify'
 // CommonJs
+
+require('dotenv').config();
+const apiKey = process.env.API_KEY;
+
+
 const fastify = require('fastify')({
   logger: true
 })
@@ -24,6 +29,16 @@ fastify.post('/date', async (request, reply) => {
     }
 })
 //console.log(dateStored, NewYork_URL)
+fastify.get('/key', async (request, reply) => {
+    try{
+    return { apiKey: apiKey }
+    }catch (error) {
+	res.status(500).send('Error fetching data');
+    }
+
+
+})
+
 // Declare a route
 fastify.get('/crimes', async (request, reply) => {
     try{

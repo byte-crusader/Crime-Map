@@ -8,12 +8,33 @@ function createCrimeColors(colorData, crimeData) {
 	return dict
 }
 // Create map object, set map starting point
-    var map = new maplibregl.Map({
+// https://api.maptiler.com/maps/hybrid/style.json?key=DKCRwurseZYVO8bivqFs
+async function fetchAPIKey(){
+	try {
+    //const response = await fetch('./test.geojson');
+        const response = await fetch('http://localhost:3000/key');
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+	const data = await response.json()
+    return data.apiKey;
+} catch (error) {
+    console.error('Failed to fetch data:', error);
+}
+
+}
+let map
+async function returnKey(){
+	const theKey = await fetchAPIKey();
+    map = new maplibregl.Map({
       container: 'map',
-      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // stylesheet location
-      center: [0, 0], // starting position [lng, lat]
+      style: `https://api.maptiler.com/maps/hybrid/style.json?key=${theKey}`, // stylesheet location
+      center: [-96.7715563417, 37.9672433944], // starting position [lng, lat]
       zoom: 3 // starting zoom
     });
+	return map
+}
     //Start of async function that gathers GEOjson data from local file
     async function fetchJSONData() {
     try {
@@ -37,7 +58,9 @@ function randomColorGen() {
 }
 let colorArr = []
 let colorCount = 0
+let crimeCount = 0
 //Load map function, start on page load    
+returnKey().then(() => {
     map.on('load', async () => {
      const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
@@ -58,16 +81,11 @@ let colorCount = 0
     flex-wrap: wrap;
     gap: 10px;
     margin: 15px;
-    padding: 15px;
     max-width: 300px;
     background-color: black;
-    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     max-height: 400px;
     overflow-y: auto;
-    position: absolute;
-    top: 30px;
-    right: 70px;
     z-index: 1;
     `;
  const crimeTypeH3 = document.createElement('h3')
@@ -86,7 +104,6 @@ checkAll.textContent = "Check / Uncheck All"
     align-items: center;
     padding: 8px;
     background: black;
-    border-radius: 4px;
     width: 100%;
     transition: all 0.2s ease;
     cursor: pointer;
@@ -110,8 +127,8 @@ checkAll.textContent = "Check / Uncheck All"
             label.style.cssText = `
     margin-left: 8px;
     font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: limegreen;
+    font-size: .8rem;
+    color: orange;
 `;
             label.htmlFor = checkbox.id;
             label.textContent = crimeType;
@@ -199,9 +216,13 @@ crimeTypes = Array.from(boxes)
 })
 
         // Add to document
-        document.body.appendChild(container);
-
-
+	const dateContainer = document.querySelector('.date-container');
+        dateContainer.appendChild(container);
+	
+	for(let i = 0; i < geoJSONcontent.length; i++){
+		crimeCount = crimeCount + 1
+	}
+	console.log(crimeCount)
      const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
      const geojson = {
             type: 'FeatureCollection',
@@ -306,7 +327,11 @@ function updateMap(geojsonInput) {
            'type': 'geojson',
            'data': geojsonInput
      });
-
+	crimeCount = 0;
+ for(let i = 0; i < geojsonInput.features.length; i++){
+         crimeCount = crimeCount + 1
+ }
+ console.log(crimeCount)
 
 // Add circles
 map.addLayer({
@@ -435,3 +460,5 @@ const geocoderApi = {
             map.getCanvas().style.cursor = '';
             popup.remove();
         });
+
+})
