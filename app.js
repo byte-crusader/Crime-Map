@@ -129,6 +129,7 @@ checkAll.textContent = "Check / Uncheck All"
     font-family: Arial, sans-serif;
     font-size: .8rem;
     color: orange;
+    width:70%;
 `;
             label.htmlFor = checkbox.id;
             label.textContent = crimeType;
