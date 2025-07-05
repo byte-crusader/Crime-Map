@@ -6,6 +6,7 @@
     <title>Document</title>
     <script src="https://unpkg.com/maplibre-gl@^5.4.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@^5.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="style.css"/>
 
     <style>
@@ -147,11 +148,45 @@ text-align:center;
 	        .filter-options-btn{
         display:none;
         }
+.icon-link-container {
+position:absolute;
+z-index: 1;
+bottom:30px;
+right:58px;
+}
+.icon-link {
+        display:block;
+        font-size:25px;
 
+color:var(--matrix-green);
+}
+.icon-link:nth-child(2){
+margin-left:.1rem;
+margin-top:.3rem;
+}
+
+
+	
 	@media (max-width: 1340px) {
     		.main-container {
 			flex-direction:column;
 			padding-bottom:1rem;
+.icon-link-container {
+position:absolute;
+z-index: 1;
+top:1551px;
+right:58px;
+}
+.icon-link {
+        display:block;
+        font-size:25px;
+
+color:var(--matrix-green);
+}
+.icon-link:nth-child(2){
+margin-left:.1rem;
+
+}
 	
 	.maplibregl-canvas {
     margin-top: 12rem;
@@ -195,8 +230,15 @@ text-align:center;
     <button id="btn">Update </button>
 	 </div>
 	 <button id="shortcut2" class="filter-options-btn">Map</button>
-
+	 <div class="icon-link-container">
+	<a href="https://sanctifiedsecurity.com" class="icon-link">
+        <i class="fas fa-home"></i>
+    </a>
+    <a href="https://github.com/byte-crusader/Crime-Map" class="icon-link">
+        <i class="fab fa-github"></i>
+    </a>
 	 </div>
+ </div>
     </div>
     <script src="app.js"></script>
 

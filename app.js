@@ -27,10 +27,20 @@ async function fetchAPIKey(){
 let map
 async function returnKey(){
 	const theKey = await fetchAPIKey();
+const center = () => {
+	if (window.innerWidth >= 1340){
+		return [-96.7715563417, 37.9672433944]
+	}
+	else{
+		return [-95.7715563417, 50.9672433944]
+	}
+
+}
+
     map = new maplibregl.Map({
       container: 'map',
       style: `https://api.maptiler.com/maps/hybrid/style.json?key=${theKey}`, // stylesheet location
-      center: [-96.7715563417, 37.9672433944], // starting position [lng, lat]
+      center: center(), // starting position [lng, lat]
       zoom: 3 // starting zoom
     });
 	return map
@@ -54,8 +64,9 @@ async function returnKey(){
 function randomColorGen() {
 	const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 	return "#" + randomColor.padStart(6, '0');
-
 }
+
+
 let colorArr = []
 let colorCount = 0
 let crimeCount = 0
@@ -381,6 +392,47 @@ map.addLayer({
         // Make sure to detect marker change for overlapping markers
         // and use mousemove instead of mouseenter event
         let currentFeatureCoordinates = undefined;
+	let isPopupOpen = false;
+	let currentPopup = null;
+map.on('click', 'crimes-circles', (e) => {
+    const featureCoordinates = e.features[0].geometry.coordinates;
+    if (currentFeatureCoordinates !== featureCoordinates) {
+        currentFeatureCoordinates = featureCoordinates;
+
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        const crimeType = e.features[0].properties.crimeType
+        const coordinates = e.features[0].geometry.coordinates;
+        let crimeDate = e.features[0].properties.date
+        let cut = crimeDate.indexOf("T");
+        crimeDate = crimeDate.substring(0, cut)
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+const popupContent = `
+    <strong>Crime:</strong> ${crimeType}<br>
+    <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
+    <strong>Date:</strong> ${crimeDate}
+        `;
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        // Add stars to map
+        popup.setOffset([0,180]).setHTML(popupContent).addTo(map);
+    }
+	    if (isPopupOpen) {
+        isPopupOpen = false;
+        popup.remove();
+        currentPopup = null;
+        return;
+    }
+isPopupOpen = true;
+
+});
+
         map.on('mousemove', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;
             if (currentFeatureCoordinates !== featureCoordinates) {
