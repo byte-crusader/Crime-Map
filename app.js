@@ -80,13 +80,14 @@ returnKey().then(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 15px;
-    max-width: 300px;
+    margin: 35px;
+    max-width: 400px;
     background-color: black;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    max-height: 400px;
+    max-height: 550px;
     overflow-y: auto;
     z-index: 1;
+    font-size:1.5rem;
     `;
  const crimeTypeH3 = document.createElement('h3')
  crimeTypeH3.textContent = "Filter By Crime Type"
@@ -127,7 +128,7 @@ checkAll.textContent = "Check / Uncheck All"
             label.style.cssText = `
     margin-left: 8px;
     font-family: Arial, sans-serif;
-    font-size: .8rem;
+    font-size: .9rem;
     color: orange;
     width:70%;
 `;
