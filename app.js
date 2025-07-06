@@ -8,7 +8,6 @@ function createCrimeColors(colorData, crimeData) {
 	return dict
 }
 // Create map object, set map starting point
-// https://api.maptiler.com/maps/hybrid/style.json?key=DKCRwurseZYVO8bivqFs
 async function fetchAPIKey(){
 	try {
     //const response = await fetch('./test.geojson');
@@ -109,9 +108,11 @@ checkAll.textContent = "Check / Uncheck All"
 //document.querySelector('.inner-date-container').insertAdjacentElement('afterend', filterBtnContainer);
 //container.appendChild(filterBtnContainer);
 
+//console.log(crimeTypes)
 
+        const crimeTypesSorted = crimeTypes.sort()
         // Create checkboxes for each crime type
-        crimeTypes.forEach(crimeType => {
+        crimeTypesSorted.forEach(crimeType => {
             const wrapper = document.createElement('div');
             wrapper.style.cssText = `
     display: flex;
