@@ -53,7 +53,7 @@ const center = () => {
     
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
-        }       
+	}       
         return await response.json();
     } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -91,21 +91,23 @@ returnKey().then(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 35px;
-    max-width: 400px;
     background-color: black;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    max-height: 550px;
     overflow-y: auto;
     z-index: 1;
     font-size:1.5rem;
     `;
+const filterBtnContainer = document.createElement('div')
+filterBtnContainer.classList.add('filter-btn-container')
+
  const crimeTypeH3 = document.createElement('h3')
  crimeTypeH3.textContent = "Filter By Crime Type"
 const checkAll = document.createElement('button')
 checkAll.textContent = "Check / Uncheck All"
-          container.appendChild(crimeTypeH3)
-	  container.appendChild(checkAll)
+          filterBtnContainer.appendChild(crimeTypeH3)
+	  filterBtnContainer.appendChild(checkAll)
+//document.querySelector('.inner-date-container').insertAdjacentElement('afterend', filterBtnContainer);
+//container.appendChild(filterBtnContainer);
 
 
         // Create checkboxes for each crime type
@@ -152,10 +154,10 @@ checkAll.textContent = "Check / Uncheck All"
 	colorArr.push(randomColorGen())
 	colorDot.style.color = colorArr[colorCount]
 	colorCount++
-
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
             wrapper.appendChild(colorDot);
+ 	//   wrapper.appendChild(filterBtnContainer)
 	    container.appendChild(wrapper);
 
 	checkbox.addEventListener("change", async () => {
@@ -231,7 +233,8 @@ crimeTypes = Array.from(boxes)
         // Add to document
 	const dateContainer = document.querySelector('.date-container');
         dateContainer.appendChild(container);
-	
+	dateContainer.appendChild(filterBtnContainer)
+
 	for(let i = 0; i < geoJSONcontent.length; i++){
 		crimeCount = crimeCount + 1
 	}
@@ -394,6 +397,7 @@ map.addLayer({
         let currentFeatureCoordinates = undefined;
 	let isPopupOpen = false;
 	let currentPopup = null;
+if (window.innerWidth <= 1340){
 map.on('click', 'crimes-circles', (e) => {
     const featureCoordinates = e.features[0].geometry.coordinates;
     if (currentFeatureCoordinates !== featureCoordinates) {
@@ -413,6 +417,7 @@ map.on('click', 'crimes-circles', (e) => {
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
+
 const popupContent = `
     <strong>Crime:</strong> ${crimeType}<br>
     <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
@@ -432,6 +437,7 @@ const popupContent = `
 isPopupOpen = true;
 
 });
+}
 
         map.on('mousemove', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;

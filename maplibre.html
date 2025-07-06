@@ -68,6 +68,10 @@ input[type="checkbox"]:checked::before {
 	border: var(--matrix-green) 2px solid;
 	color:var(--matrix-green);
 	padding:2rem;
+max-width: 400px;
+max-height: 550px; 
+
+        margin:35px;
 }
 .crime-wrapper {
 	border: var(--matrix-green) 1px solid;
@@ -171,7 +175,11 @@ margin-top:.3rem;
     		.main-container {
 			flex-direction:column;
 			padding-bottom:1rem;
-.icon-link-container {
+
+			.inner-date-container{
+			margin-top:1rem;
+			}	
+		.icon-link-container {
 position:absolute;
 z-index: 1;
 top:1551px;
@@ -191,10 +199,16 @@ margin-left:.1rem;
 	.maplibregl-canvas {
     margin-top: 12rem;
 	}
-	#checkbox-container{
-		border:none;
+	#checkbox-container{border:none;
 		border-bottom:green 1px solid;
-		margin-right:2rem;
+		 margin-top:1rem;   
+		 margin-right:2rem; 
+		 margin-bottom:1rem;   
+		 margin-left:2rem; 
+
+		padding:1.5rem;
+		max-width:370px;
+		max-height:490px;
 	}
 	#map {
 	width: 100%;
@@ -211,7 +225,9 @@ margin-left:.1rem;
 	.date-container{
 	height:847px;
 	}
-
+	.filter-btn-container h3{
+	margin-top:2.5rem;
+	}
 		}
     </style>
 </head>
@@ -223,12 +239,15 @@ margin-left:.1rem;
     
 	    <button id="shortcut1" class="filter-options-btn">Filter Options </button>
     </div>
+
  <div class="date-container">
+
 	 <div class="inner-date-container">
     <label id="shortcut1-go" for="dateInput">Select a date</label>
     <input type="date" id="dateInput" name="dateInput"></input>
     <button id="btn">Update </button>
 	 </div>
+
 	 <button id="shortcut2" class="filter-options-btn">Map</button>
 	 <div class="icon-link-container">
 	<a href="https://sanctifiedsecurity.com" class="icon-link">
@@ -238,6 +257,7 @@ margin-left:.1rem;
         <i class="fab fa-github"></i>
     </a>
 	 </div>
+
  </div>
     </div>
     <script src="app.js"></script>
