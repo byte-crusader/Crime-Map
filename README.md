@@ -1,6 +1,6 @@
 # US open source police station crime records
 
-# East 
+# East:
 
  New York City
  https://data.cityofnewyork.us/resource/qgea-i56i.json
