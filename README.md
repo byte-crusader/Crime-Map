@@ -1,12 +1,21 @@
 # US open source police station crime records
 
+# East 
+
  New York City
  https://data.cityofnewyork.us/resource/qgea-i56i.json
 
  Boston
  https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b
 
+ Philadelphia
+ https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+incidents_part1_part2
 
+ Pittsburgh
+ https://data.wprdc.org/api/3/action/datastore_search?resource_id=1797ead8-8262-41cc-9099-cbc67a3ce4e0
+
+ Florida	Miami-Dade County
+ rj6a-xsnz	https://data.miamidade.gov/resource/rj6a-xsnz.json
 
 # Midwest:
 
@@ -14,6 +23,8 @@
  Chicago
  https://data.cityofchicago.org/resource/ijzp-q8t2.json
 
+ Kansas City
+ https://data.kcmo.org/resource/wy8a-bydn.json
 
  Cincinnati
  https://data.cincinnati-oh.gov/resource/k59e-2pvf.json
@@ -49,3 +60,9 @@
  New Orleans
  https://data.nola.gov/resource/5fn8-vtui.json
 
+
+
+
+
+Colorado	Denver	xmn8-bsdr	https://data.denvergov.org/resource/xmn8-bsdr.json
+Kansas	Topeka	9x46-8cz2	https://data.topeka.org/resource/9x46-8cz2.json
