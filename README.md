@@ -6,12 +6,6 @@
  Boston
  https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b
 
- Philadelphia
- https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+incidents_part1_part2
-
- Pittsburgh
- https://data.wprdc.org/api/3/action/datastore_search?resource_id=1797ead8-8262-41cc-9099-cbc67a3ce4e0
-
 
 
 # Midwest:
@@ -20,8 +14,6 @@
  Chicago
  https://data.cityofchicago.org/resource/ijzp-q8t2.json
 
- Kansas City
- https://data.kcmo.org/resource/wy8a-bydn.json
 
  Cincinnati
  https://data.cincinnati-oh.gov/resource/k59e-2pvf.json
@@ -57,16 +49,3 @@
  New Orleans
  https://data.nola.gov/resource/5fn8-vtui.json
 
- Atlanta
- https://opendata.atlantapd.org/api/crimes/all
-
-
-
-# Mountain Region:
-
-
- Denver
- https://www.denvergov.org/api/dataset/crime/query
-
- Boulder
- https://opendata.boulder.org/api/records/1.0/search/?dataset=police-crime-incidents
