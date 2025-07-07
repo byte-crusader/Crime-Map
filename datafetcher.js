@@ -17,8 +17,8 @@ let dateStored = "2024-01-01";
 //EX: https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=2024-01-01
 const NewYork_URL = `https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=${dateStored}`
 const Seattle_URL = `https://data.seattle.gov/resource/tazs-3rd5.json?$where=offense_date between '${dateStored}T00:00:00.000' and '${dateStored}T23:59:59.999'`
-const Chicago_URL = "https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '2024-01-01T00:00:00' and '2024-01-01T23:59:59'"
 
+const Chicago_URL = `https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
 
 fastify.post('/date', async (request, reply) => {
     try{
@@ -46,12 +46,12 @@ fastify.get('/crimes', async (request, reply) => {
     try{
         const NewYork_URL = `https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=${dateStored}`
         const Seattle_URL = `https://data.seattle.gov/resource/tazs-3rd5.json?$where=offense_date between '${dateStored}T00:00:00.000' and '${dateStored}T23:59:59.999'`
-const Chicago_URL = "https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '2024-01-01T00:00:00' and '2024-01-01T23:59:59'"
+const Chicago_URL = `https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
  
         const response = await fetch(NewYork_URL);
 	const response1 = await fetch(Seattle_URL);
   const response2 = await fetch(Chicago_URL);
-	
+console.log(response2)	
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -81,7 +81,7 @@ const filteredData2 = data2.map(crime => ({
 
 
 	const combined = [...filteredData, ...filteredData1, ...filteredData2];
-	console.log(filteredData2)
+//	console.log(filteredData2)
         return combined
     }catch (error){
         console.log(error.message)
