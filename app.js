@@ -74,14 +74,16 @@ returnKey().then(() => {
     map.on('load', async () => {
      const crimeTypesContainer = document.querySelector('#crimeTypes') 
 	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
-	console.log(geoJSONcontent)
+	//console.log(geoJSONcontent)
        crimeTypes = [] 
        geoJSONcontent.forEach(crime => {
-        if(!crimeTypes.includes(crime.crimeType)) {
+        if(!crimeTypes.includes(crime.crimeType) && crime.crimeType !== undefined) {
             crimeTypes.push(crime.crimeType)
         }
 
        })
+	   // console.log(crimeTypes)
+	// console.log(crimeTypes);
         // Create checkbox container
         const container = document.createElement('div');
         container.id = 'checkbox-container';
@@ -112,7 +114,11 @@ checkAll.textContent = "Check / Uncheck All"
 
         const crimeTypesSorted = crimeTypes.sort()
         // Create checkboxes for each crime type
-        crimeTypesSorted.forEach(crimeType => {
+
+//console.log(crimeTypes)
+	    crimeTypesSorted.forEach(crimeType => {
+
+//console.log("first", crimeType)
             const wrapper = document.createElement('div');
             wrapper.style.cssText = `
     display: flex;
@@ -125,7 +131,7 @@ checkAll.textContent = "Check / Uncheck All"
 `;
 	wrapper.classList.add('crime-wrapper');
             const checkbox = document.createElement('input');
-
+//console.log("Second",crimeType)
 	    //wrapper.id = 'checkboxInput';
             checkbox.type = 'checkbox';
             checkbox.id = crimeType.replace(/\s+/g, '-').toLowerCase();
@@ -258,7 +264,7 @@ crimeTypes = Array.from(boxes)
                 }
             }))
         };
-
+//console.log(geojson)
 map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
