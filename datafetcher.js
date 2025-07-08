@@ -19,7 +19,7 @@ const NewYork_URL = `https://data.cityofnewyork.us/resource/qgea-i56i.json?cmpln
 const Seattle_URL = `https://data.seattle.gov/resource/tazs-3rd5.json?$where=offense_date between '${dateStored}T00:00:00.000' and '${dateStored}T23:59:59.999'`
 const Cincinnati_URL = `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
 const Chicago_URL = `https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date_reported between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
-
+const SanFrancisco_URL = `https://data.sfgov.org/resource/wg3w-h783.json?$where=incident_date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
 fastify.post('/date', async (request, reply) => {
     try{
         console.log(request.body)
@@ -49,7 +49,8 @@ fastify.get('/crimes', async (request, reply) => {
 		`https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=${dateStored}`,
 		`https://data.seattle.gov/resource/tazs-3rd5.json?$where=offense_date between '${dateStored}T00:00:00.000' and '${dateStored}T23:59:59.999'`,
 		`https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
-		`https://data.cincinnati-oh.gov/resource/k59e-2pvf.json?$where=date_reported between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
+		`https://data.cincinnati-oh.gov/resource/k59e-2pvf.json?$where=date_reported between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
+		`https://data.sfgov.org/resource/wg3w-h783.json?$where=incident_date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
 	]
 	for(let i = 0; i < endPointArr.length; i++){
 		let response = await fetch(endPointArr[i])
@@ -84,9 +85,15 @@ fastify.get('/crimes', async (request, reply) => {
 	  longitude: crime.longitude_x,
 	  latitude: crime.latitude_x
 	}));
-console.log(CincinnatiData)
+	const SanFranciscoData = dataArr[4].map(crime => ({
+	 date: crime.incident_date,
+	 crimeType: crime.incident_subcategory,
+	 longitude: crime.longitude,
+         latitude: crime.latitude
 
-	const combined = [...filteredData, ...filteredData1, ...filteredData2, ...CincinnatiData];
+	}));
+
+	const combined = [...filteredData, ...filteredData1, ...filteredData2, ...CincinnatiData, ...SanFranciscoData];
 //console.log("combined",combined)
         return combined
     }catch (error){
