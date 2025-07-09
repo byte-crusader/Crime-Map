@@ -12,8 +12,9 @@
                }
        .filter-btn-container h3 {
                color:green;
-	       font-size:1.3rem;
+	       font-size:1.5rem;
        		width:100%;
        		margin-bottom:1rem;
+		/*text-shadow: 0 0 5px var(--matrix-glow);*/
 	}
 

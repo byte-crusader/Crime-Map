@@ -245,6 +245,8 @@ crimeTypes = Array.from(boxes)
 	for(let i = 0; i < geoJSONcontent.length; i++){
 		crimeCount = crimeCount + 1
 	}
+	const crimeCountDisplay = document.querySelector('.crime-count');
+	crimeCountDisplay.innerText = crimeCount
 	console.log(crimeCount)
      const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
      const geojson = {

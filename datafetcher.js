@@ -14,12 +14,6 @@ fastify.register(require('@fastify/cors'), {
   origin: '*'  // This allows all origins - be more restrictive in production
 })
 let dateStored = "2024-01-01";
-//EX: https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=2024-01-01
-const NewYork_URL = `https://data.cityofnewyork.us/resource/qgea-i56i.json?cmplnt_fr_dt=${dateStored}`
-const Seattle_URL = `https://data.seattle.gov/resource/tazs-3rd5.json?$where=offense_date between '${dateStored}T00:00:00.000' and '${dateStored}T23:59:59.999'`
-const Cincinnati_URL = `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
-const Chicago_URL = `https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date_reported between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
-const SanFrancisco_URL = `https://data.sfgov.org/resource/wg3w-h783.json?$where=incident_date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
 fastify.post('/date', async (request, reply) => {
     try{
         console.log(request.body)

@@ -81,8 +81,8 @@ max-height: 550px;
 /* Label styling */
 label[for="dateInput"] {
   font-family: 'Courier New', monospace;
-  color: var(--matrix-green);
-  text-shadow: 0 0 5px var(--matrix-glow);
+  color: green;
+  /*text-shadow: 0 0 5px var(--matrix-glow);*/
   font-size: 1.2rem;
 }
 
@@ -141,7 +141,7 @@ button:hover, button:focus {
 		display:flex;
 align-items:center;
 justify-content:center;
-flex-direction:column;
+flex-direction:row;
 text-align:center;
 	}
 	#dateInput {
@@ -257,6 +257,20 @@ margin-left:.1rem;
 	margin-top:2.5rem;
 	}
 		}
+	.inner-container{
+	display:flex;
+	width:100%;
+flex-direction:column;
+	}
+	.crime-count-container{
+	margin-top: 1.7rem;
+	color:green;
+	font-size:1rem;
+	}
+	.crime-count{
+	color:red;
+	font-size:1.5rem;
+	}
     </style>
 </head>
 <body>
@@ -271,11 +285,16 @@ margin-left:.1rem;
  <div class="date-container">
 
 	 <div class="inner-date-container">
+		 <div class="inner-container">
     <label id="shortcut1-go" for="dateInput">Select a date</label>
     <input type="date" id="dateInput" name="dateInput"></input>
     <button id="btn">Update </button>
 	 </div>
-
+	 <div class="crime-count-container">
+		<h3>Crime Count</h3>
+		<p class="crime-count"></p>
+	 </div>
+	 </div>
 	 <button id="shortcut2" class="filter-options-btn">Map</button>
 	 <div class="icon-link-container">
 	<a href="https://sanctifiedsecurity.com" class="icon-link">
