@@ -227,7 +227,7 @@ const policeEndPoints = [
                 `https://data.sfgov.org/resource/wg3w-h783.json`
 ]
 const linkBox = document.createElement('div');
-linkBox.classList.add("crime-wrapper")
+linkBox.classList.add("urlWrapper")
 filterTypeButton.addEventListener('click', () => {
 	const crimeWrapper = document.querySelectorAll('.crime-wrapper');
 	const crimeContainer = document.querySelector('#checkbox-container');
@@ -238,6 +238,13 @@ filterTypeButton.addEventListener('click', () => {
 	})
 	isOn = false
 	filterTypeButton.textContent = "[x]"
+	linkBox.innerHTML = '';
+	for(let i = 0; i < policeEndPoints.length; i++){
+	const item = document.createElement('div');
+	item.classList.add('urlDiv')
+	item.textContent = policeEndPoints[i];
+	linkBox.appendChild(item)
+	}
 	crimeContainer.appendChild(linkBox)	
 	}else if(isOn == false){
 	crimeWrapper.forEach(node => {
