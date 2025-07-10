@@ -70,7 +70,8 @@ input[type="checkbox"]:checked::before {
 	padding:2rem;
 max-width: 400px;
 max-height: 550px; 
-
+min-width: 400px;
+min-height: 550px;
         margin:35px;
 }
 .crime-wrapper {
@@ -237,6 +238,8 @@ margin-left:.1rem;
 		padding:1.5rem;
 		max-width:370px;
 		max-height:490px;
+		min-height:0px;
+		min-width:0px;
 	}
 	#map {
 	width: 100%;
@@ -264,12 +267,18 @@ flex-direction:column;
 	}
 	.crime-count-container{
 	margin-top: 1.7rem;
+	margin-left:1rem;
 	color:green;
 	font-size:1rem;
 	}
 	.crime-count{
 	color:red;
 	font-size:1.5rem;
+	}
+
+	.filter-btn-type{
+	margin-left:1rem;
+
 	}
     </style>
 </head>

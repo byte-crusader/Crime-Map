@@ -98,15 +98,19 @@ returnKey().then(() => {
     z-index: 1;
     font-size:1.5rem;
     `;
-const filterBtnContainer = document.createElement('div')
-filterBtnContainer.classList.add('filter-btn-container')
-
- const crimeTypeH3 = document.createElement('h3')
+const filterBtnContainer = document.createElement('div');
+filterBtnContainer.classList.add('filter-btn-container');
+const filterTypeButton = document.createElement('button');
+filterTypeButton.classList.add('filter-btn-type');
+filterTypeButton.textContent = "[ ]"
+	    //🚔⚖️🕵️
+ const crimeTypeH3 = document.createElement('h3');
  crimeTypeH3.textContent = "Filter By Crime Type"
-const checkAll = document.createElement('button')
+const checkAll = document.createElement('button');
 checkAll.textContent = "Check / Uncheck All"
           filterBtnContainer.appendChild(crimeTypeH3)
 	  filterBtnContainer.appendChild(checkAll)
+	  filterBtnContainer.appendChild(filterTypeButton)
 //document.querySelector('.inner-date-container').insertAdjacentElement('afterend', filterBtnContainer);
 //container.appendChild(filterBtnContainer);
 
@@ -166,14 +170,13 @@ checkAll.textContent = "Check / Uncheck All"
             wrapper.appendChild(colorDot);
  	//   wrapper.appendChild(filterBtnContainer)
 	    container.appendChild(wrapper);
-
 	checkbox.addEventListener("change", async () => {
 	let boxes = document.querySelectorAll('.checkboxInput');
 	crimeTypes  = Array.from(boxes)
 			.filter(box => box.checked)
 			.map(box => box.value);
 const geoJSONcontent = await  fetchJSONData();
-        
+ 
 const geojson = {
         type: 'FeatureCollection',
         features: geoJSONcontent.map(crime => ({
@@ -214,6 +217,37 @@ const geojson = {
 	//console.log(geoJSONFiltered)
 	});
         });
+
+let isOn = true
+const policeEndPoints = [
+                `https://data.cityofnewyork.us/resource/qgea-i56i.json`,
+                `https://data.seattle.gov/resource/tazs-3rd5.json`,
+                `https://data.cityofchicago.org/resource/ijzp-q8t2.json`,
+                `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
+                `https://data.sfgov.org/resource/wg3w-h783.json`
+]
+const linkBox = document.createElement('div');
+linkBox.classList.add("crime-wrapper")
+filterTypeButton.addEventListener('click', () => {
+	const crimeWrapper = document.querySelectorAll('.crime-wrapper');
+	const crimeContainer = document.querySelector('#checkbox-container');
+	console.log(crimeContainer)
+	if (isOn == true){
+	crimeWrapper.forEach(node => {
+	node.style.display = 'none';
+	})
+	isOn = false
+	filterTypeButton.textContent = "[x]"
+	crimeContainer.appendChild(linkBox)	
+	}else if(isOn == false){
+	crimeWrapper.forEach(node => {
+		node.style.display = 'flex';
+	})
+	isOn = true
+	filterTypeButton.textContent = "[ ]"
+	linkBox.remove()
+	}
+})
         checkAll.addEventListener('click', () => {
                 let boxes = document.querySelectorAll('.checkboxInput');
                 boxes.forEach((element) => {
