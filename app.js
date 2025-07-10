@@ -240,8 +240,8 @@ filterTypeButton.addEventListener('click', () => {
 	filterTypeButton.textContent = "[x]"
 	linkBox.innerHTML = '';
 	for(let i = 0; i < policeEndPoints.length; i++){
-	const item = document.createElement('div');
-	item.classList.add('urlDiv')
+	const item = document.createElement('a');
+	item.classList.add('url')
 	item.textContent = policeEndPoints[i];
 	linkBox.appendChild(item)
 	}
