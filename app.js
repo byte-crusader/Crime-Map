@@ -226,7 +226,17 @@ const policeEndPoints = [
                 `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
                 `https://data.sfgov.org/resource/wg3w-h783.json`
 ]
+const cities = [
+	'New York',
+	'Seattle',
+	'Chicago',
+	'Cincinnati',
+	'SanFrancisco'
+]
+
 const linkBox = document.createElement('div');
+const endPointsH3 = document.createElement('h3');
+endPointsH3.style.marginTop = '1.5rem';
 linkBox.classList.add("urlWrapper")
 filterTypeButton.addEventListener('click', () => {
 	const crimeWrapper = document.querySelectorAll('.crime-wrapper');
@@ -239,10 +249,17 @@ filterTypeButton.addEventListener('click', () => {
 	isOn = false
 	filterTypeButton.textContent = "[x]"
 	linkBox.innerHTML = '';
+	endPointsH3.textContent = 'Police Data Endpoints'
+	crimeContainer.appendChild(endPointsH3);
 	for(let i = 0; i < policeEndPoints.length; i++){
 	const item = document.createElement('a');
+	const span = document.createElement('span');
+	span.classList.add('url-span');
+	span.textContent = policeEndPoints[i]
 	item.classList.add('url')
-	item.textContent = policeEndPoints[i];
+	item.href = policeEndPoints[i];
+	item.textContent = cities[i] + " - ";
+	item.appendChild(span)
 	linkBox.appendChild(item)
 	}
 	crimeContainer.appendChild(linkBox)	
@@ -252,7 +269,9 @@ filterTypeButton.addEventListener('click', () => {
 	})
 	isOn = true
 	filterTypeButton.textContent = "[ ]"
-	linkBox.remove()
+	linkBox.remove()	
+	endPointsH3.remove()
+	count = 0
 	}
 })
         checkAll.addEventListener('click', () => {
@@ -378,6 +397,13 @@ const geojson = {
             }
         }))
     };
+	crimeCount = 0
+	for(let i = 0; i < geoJSONcontent.length; i++){
+        crimeCount = crimeCount + 1
+}
+const crimeCountDisplay = document.querySelector('.crime-count');
+crimeCountDisplay.innerText = crimeCount
+
         updateMap(geojson)
 
     });
