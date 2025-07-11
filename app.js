@@ -1,58 +1,58 @@
-let btn = document.querySelector("#btn");  
+let btn = document.querySelector("#btn");
 
 function createCrimeColors(colorData, crimeData) {
-	let dict = {}
-	for(let i = 0; i < colorData.length; i++){
-		dict[crimeData[i]] = colorData[i]
-	}
-	return dict
+    let dict = {}
+    for (let i = 0; i < colorData.length; i++) {
+        dict[crimeData[i]] = colorData[i]
+    }
+    return dict
 }
 // Create map object, set map starting point
-async function fetchAPIKey(){
-	try {
-    //const response = await fetch('./test.geojson');
+async function fetchAPIKey() {
+    try {
+        //const response = await fetch('./test.geojson');
         const response = await fetch('http://localhost:3000/key');
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json()
+        return data.apiKey;
+    } catch (error) {
+        console.error('Failed to fetch data:', error);
     }
-	const data = await response.json()
-    return data.apiKey;
-} catch (error) {
-    console.error('Failed to fetch data:', error);
-}
 
 }
 let map
-async function returnKey(){
-	const theKey = await fetchAPIKey();
-const center = () => {
-	if (window.innerWidth >= 1340){
-		return [-96.7715563417, 37.9672433944]
-	}
-	else{
-		return [-95.7715563417, 50.9672433944]
-	}
+async function returnKey() {
+    const theKey = await fetchAPIKey();
+    const center = () => {
+        if (window.innerWidth >= 1340) {
+            return [-96.7715563417, 37.9672433944]
+        }
+        else {
+            return [-95.7715563417, 50.9672433944]
+        }
 
-}
+    }
 
     map = new maplibregl.Map({
-      container: 'map',
-      style: `https://api.maptiler.com/maps/hybrid/style.json?key=${theKey}`, // stylesheet location
-      center: center(), // starting position [lng, lat]
-      zoom: 3 // starting zoom
+        container: 'map',
+        style: `https://api.maptiler.com/maps/hybrid/style.json?key=${theKey}`, // stylesheet location
+        center: center(), // starting position [lng, lat]
+        zoom: 3 // starting zoom
     });
-	return map
+    return map
 }
-    //Start of async function that gathers GEOjson data from local file
-    async function fetchJSONData() {
+//Start of async function that gathers GEOjson data from local file
+async function fetchJSONData() {
     try {
         //const response = await fetch('./test.geojson');
-	    const response = await fetch('http://localhost:3000/crimes');
-    
+        const response = await fetch('http://localhost:3000/crimes');
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
-	}       
+        }
         return await response.json();
     } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -61,8 +61,8 @@ const center = () => {
 
 //End of async function
 function randomColorGen() {
-	const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-	return "#" + randomColor.padStart(6, '0');
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    return "#" + randomColor.padStart(6, '0');
 }
 
 
@@ -72,57 +72,60 @@ let crimeCount = 0
 //Load map function, start on page load    
 returnKey().then(() => {
     map.on('load', async () => {
-     const crimeTypesContainer = document.querySelector('#crimeTypes') 
-	 const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
-	//console.log(geoJSONcontent)
-       crimeTypes = [] 
-       geoJSONcontent.forEach(crime => {
-        if(!crimeTypes.includes(crime.crimeType) && crime.crimeType !== undefined) {
-            crimeTypes.push(crime.crimeType)
-        }
-
-       })
-	   // console.log(crimeTypes)
-	// console.log(crimeTypes);
+        const crimeTypesContainer = document.querySelector('#crimeTypes')
+        const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
+        //console.log(geoJSONcontent)
+        let crimeTypes = []
+        geoJSONcontent.forEach(crime => {
+	//	if(crime.crimeType){
+            if (!crimeTypes.includes(crime.crimeType) && crime.crimeType !== undefined) {
+                crimeTypes.push(crime.crimeType)
+            }
+	//	}
+        })
+        // console.log(crimeTypes)
+        // console.log(crimeTypes);
         // Create checkbox container
         const container = document.createElement('div');
         container.id = 'checkbox-container';
         //container.style.cssText = 'display: flex; gap: 5px; margin: 10px; width:40%';
         container.style.cssText = `
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
     background-color: black;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow-y: auto;
     z-index: 1;
     font-size:1.5rem;
     `;
-const filterBtnContainer = document.createElement('div');
-filterBtnContainer.classList.add('filter-btn-container');
-const filterTypeButton = document.createElement('button');
-filterTypeButton.classList.add('filter-btn-type');
-filterTypeButton.textContent = "[ ]"
-	    //🚔⚖️🕵️
- const crimeTypeH3 = document.createElement('h3');
- crimeTypeH3.textContent = "Filter By Crime Type"
-const checkAll = document.createElement('button');
-checkAll.textContent = "Check / Uncheck All"
-          filterBtnContainer.appendChild(crimeTypeH3)
-	  filterBtnContainer.appendChild(checkAll)
-	  filterBtnContainer.appendChild(filterTypeButton)
-//document.querySelector('.inner-date-container').insertAdjacentElement('afterend', filterBtnContainer);
-//container.appendChild(filterBtnContainer);
+        const filterBtnContainer = document.createElement('div');
+        filterBtnContainer.classList.add('filter-btn-container');
+        const filterTypeButton = document.createElement('button');
+        filterTypeButton.classList.add('filter-btn-type');
+        filterTypeButton.textContent = "[ ]"
+        //🚔⚖️🕵️
+        const crimeTypeH3 = document.createElement('h3');
+        crimeTypeH3.textContent = "Filter By Crime Type"
+        const checkAll = document.createElement('button');
+        checkAll.textContent = "Check / Uncheck All"
+        filterBtnContainer.appendChild(crimeTypeH3)
+        filterBtnContainer.appendChild(checkAll)
+        filterBtnContainer.appendChild(filterTypeButton)
+        //document.querySelector('.inner-date-container').insertAdjacentElement('afterend', filterBtnContainer);
+        //container.appendChild(filterBtnContainer);
 
-//console.log(crimeTypes)
+        //console.log(crimeTypes)
 
         const crimeTypesSorted = crimeTypes.sort()
         // Create checkboxes for each crime type
 
-//console.log(crimeTypes)
-	    crimeTypesSorted.forEach(crimeType => {
+        //console.log(crimeTypes)
+        const searchBar = document.createElement('input');
+        searchBar.setAttribute('type', 'text');
+        searchBar.classList.add('search-bar')
+	searchBar.placeholder = 'Search...'
+        container.appendChild(searchBar)
+        crimeTypesSorted.forEach(crimeType => {
 
-//console.log("first", crimeType)
+            //console.log("first", crimeType)
             const wrapper = document.createElement('div');
             wrapper.style.cssText = `
     display: flex;
@@ -133,13 +136,13 @@ checkAll.textContent = "Check / Uncheck All"
     transition: all 0.2s ease;
     cursor: pointer;
 `;
-	wrapper.classList.add('crime-wrapper');
+            wrapper.classList.add('crime-wrapper');
             const checkbox = document.createElement('input');
-//console.log("Second",crimeType)
-	    //wrapper.id = 'checkboxInput';
+            //console.log("Second",crimeType)
+            //wrapper.id = 'checkboxInput';
             checkbox.type = 'checkbox';
             checkbox.id = crimeType.replace(/\s+/g, '-').toLowerCase();
-	    checkbox.classList.add('checkboxInput');
+            checkbox.classList.add('checkboxInput');
             checkbox.value = crimeType;
             checkbox.checked = true; // Default to checked
             checkbox.style.cssText = `
@@ -157,159 +160,181 @@ checkAll.textContent = "Check / Uncheck All"
     width:70%;
 `;
             label.htmlFor = checkbox.id;
-            label.textContent = crimeType;
-           
-
-	const colorDot = document.createElement('span');
-	colorDot.classList.add('colorDot');
-	colorArr.push(randomColorGen())
-	colorDot.style.color = colorArr[colorCount]
-	colorCount++
+            label.textContent = crimeType.toUpperCase();
+ 	    label.classList.add('checkbox-label');
+            const colorDot = document.createElement('span');
+            colorDot.classList.add('colorDot');
+            colorArr.push(randomColorGen())
+            colorDot.style.color = colorArr[colorCount]
+            colorCount++
             wrapper.appendChild(checkbox);
             wrapper.appendChild(label);
             wrapper.appendChild(colorDot);
- 	//   wrapper.appendChild(filterBtnContainer)
-	    container.appendChild(wrapper);
-	checkbox.addEventListener("change", async () => {
-	let boxes = document.querySelectorAll('.checkboxInput');
-	crimeTypes  = Array.from(boxes)
-			.filter(box => box.checked)
-			.map(box => box.value);
-const geoJSONcontent = await  fetchJSONData();
- 
-const geojson = {
-        type: 'FeatureCollection',
-        features: geoJSONcontent.map(crime => ({
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [
-                    parseFloat(crime.longitude),
-                    parseFloat(crime.latitude)
-                ]
-            },
-            properties: {
-                date: crime.date,
-                crimeType: crime.crimeType
-            }
-        }))
-    };
+            //   wrapper.appendChild(filterBtnContainer)
+            container.appendChild(wrapper);
+            checkbox.addEventListener("change", async () => {
+                let boxes = document.querySelectorAll('.checkboxInput');
+                crimeTypes = Array.from(boxes)
+                    .filter(box => box.checked)
+                    .map(box => box.value);
+                const geoJSONcontent = await fetchJSONData();
 
-	const geoJSONFiltered = {
-        type: 'FeatureCollection',
-        features: geojson.features.filter(feature => {
-//                const featureCrimeTypes = feature.properties.crimeType
-                return crimeTypes.includes(feature.properties.crimeType)
+                const geojson = {
+                    type: 'FeatureCollection',
+                    features: geoJSONcontent.map(crime => ({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                parseFloat(crime.longitude),
+                                parseFloat(crime.latitude)
+                            ]
+                        },
+                        properties: {
+                            date: crime.date,
+                            crimeType: crime.crimeType
+                        }
+                    }))
+                };
 
-})
-}
+                const geoJSONFiltered = {
+                    type: 'FeatureCollection',
+                    features: geojson.features.filter(feature => {
+                        //                const featureCrimeTypes = feature.properties.crimeType
+                        return crimeTypes.includes(feature.properties.crimeType)
 
-	updateMap(geoJSONFiltered)
-	map.getSource('crimes').setData(geoJSONFiltered);
-    // Make sure the layer paint property uses the color dictionary
-    map.setPaintProperty('crimes-circles', 'circle-color', [
-        'match',
-        ['get', 'crimeType'],
-        ...Object.entries(crimeColorDict).flat(),
-        '#999999'  // default color
-    ]);
-	//console.log(geojson)
-	//console.log(geoJSONFiltered)
-	});
+                    })
+                }
+
+                updateMap(geoJSONFiltered)
+                map.getSource('crimes').setData(geoJSONFiltered);
+                // Make sure the layer paint property uses the color dictionary
+                map.setPaintProperty('crimes-circles', 'circle-color', [
+                    'match',
+                    ['get', 'crimeType'],
+                    ...Object.entries(crimeColorDict).flat(),
+                    '#999999'  // default color
+                ]);
+                //console.log(geojson)
+                //console.log(geoJSONFiltered)
+            });
         });
 
-let isOn = true
-const policeEndPoints = [
-                `https://data.cityofnewyork.us/resource/qgea-i56i.json`,
-                `https://data.seattle.gov/resource/tazs-3rd5.json`,
-                `https://data.cityofchicago.org/resource/ijzp-q8t2.json`,
-                `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
-                `https://data.sfgov.org/resource/wg3w-h783.json`
-]
-const cities = [
-	'New York',
-	'Seattle',
-	'Chicago',
-	'Cincinnati',
-	'SanFrancisco'
-]
+        let isOn = true
+        const policeEndPoints = [
+            `https://data.cityofnewyork.us/resource/qgea-i56i.json`,
+            `https://data.seattle.gov/resource/tazs-3rd5.json`,
+            `https://data.cityofchicago.org/resource/ijzp-q8t2.json`,
+            `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
+            `https://data.sfgov.org/resource/wg3w-h783.json`
+        ]
+        const cities = [
+            'New York',
+            'Seattle',
+            'Chicago',
+            'Cincinnati',
+            'SanFrancisco'
+        ]
 
-const linkBox = document.createElement('div');
-const endPointsH3 = document.createElement('h3');
-endPointsH3.style.marginTop = '1.5rem';
-linkBox.classList.add("urlWrapper")
-filterTypeButton.addEventListener('click', () => {
-	const crimeWrapper = document.querySelectorAll('.crime-wrapper');
-	const crimeContainer = document.querySelector('#checkbox-container');
-	console.log(crimeContainer)
-	if (isOn == true){
-	crimeWrapper.forEach(node => {
-	node.style.display = 'none';
-	})
-	isOn = false
-	filterTypeButton.textContent = "[x]"
-	linkBox.innerHTML = '';
-	endPointsH3.textContent = 'Police Data Endpoints'
-	crimeContainer.appendChild(endPointsH3);
-	for(let i = 0; i < policeEndPoints.length; i++){
-	const item = document.createElement('a');
-	const span = document.createElement('span');
-	span.classList.add('url-span');
-	span.textContent = policeEndPoints[i]
-	item.classList.add('url')
-	item.href = policeEndPoints[i];
-	item.textContent = cities[i] + " - ";
-	item.appendChild(span)
-	linkBox.appendChild(item)
-	}
-	crimeContainer.appendChild(linkBox)	
-	}else if(isOn == false){
-	crimeWrapper.forEach(node => {
-		node.style.display = 'flex';
-	})
-	isOn = true
-	filterTypeButton.textContent = "[ ]"
-	linkBox.remove()	
-	endPointsH3.remove()
-	count = 0
-	}
-})
+        const linkBox = document.createElement('div');
+        const endPointsH3 = document.createElement('h3');
+        endPointsH3.style.marginBottom = '1.5rem';
+        linkBox.classList.add("urlWrapper")
+        filterTypeButton.addEventListener('click', () => {
+            const crimeWrapper = document.querySelectorAll('.crime-wrapper');
+            const crimeContainer = document.querySelector('#checkbox-container');
+            console.log(crimeContainer)
+            if (isOn == true) {
+                crimeWrapper.forEach(node => {
+                    node.style.display = 'none';
+                })
+		searchBar.style.display = 'none';
+                isOn = false
+                filterTypeButton.textContent = "[x]"
+                linkBox.innerHTML = '';
+                endPointsH3.textContent = 'Police Data Endpoints'
+                crimeContainer.appendChild(endPointsH3);
+                for (let i = 0; i < policeEndPoints.length; i++) {
+                    const item = document.createElement('a');
+                    const span = document.createElement('span');
+                    span.classList.add('url-span');
+                    span.textContent = policeEndPoints[i]
+                    item.classList.add('url')
+                    item.href = policeEndPoints[i];
+                    item.textContent = cities[i] + " - ";
+                    item.appendChild(span)
+                    linkBox.appendChild(item)
+                }
+                crimeContainer.appendChild(linkBox)
+            } else if (isOn == false) {
+                crimeWrapper.forEach(node => {
+                    node.style.display = 'flex';
+                })
+                isOn = true
+                filterTypeButton.textContent = "[ ]"
+		searchBar.style.display = 'block';
+                linkBox.remove()
+                endPointsH3.remove()
+                count = 0
+            }
+        })
+        searchBar.addEventListener('input', function (event) {
+            const userInput = event.target.value.toLowerCase()
+	    const crimeDiv = document.querySelectorAll('.crime-wrapper');
+		crimeDiv.forEach((node) => {
+	    		const checkboxText = node.querySelectorAll('.checkbox-label');
+			let isVisible = false;
+			checkboxText.forEach((innerNode) => {
+				if(innerNode.textContent.toLowerCase().includes(userInput)){
+					isVisible = true;
+				}	
+
+			})
+			node.style.display = isVisible ? 'flex' : 'none';
+			
+		})
+        })
+
         checkAll.addEventListener('click', () => {
-                let boxes = document.querySelectorAll('.checkboxInput');
-                boxes.forEach((element) => {
-                        if (element.checked === false){
-                        element.checked = true
-                }else{
-                        element.checked = false
-                }})
+            let boxes = document.querySelectorAll('.checkboxInput');
+            boxes.forEach((element) => {
+                if (element.checked === false) {
+                    element.checked = true
+                } else {
+                    element.checked = false
+                }
+            })
 
-crimeTypes = Array.from(boxes)
+            crimeTypes = Array.from(boxes)
                 .filter(box => box.checked)
                 .map(box => box.value);
-        const geoJSONFiltered = {
-        type: 'FeatureCollection',
-        features: geojson.features.filter(feature => {
-                const featureCrimeTypes = feature.properties.crimeType
-                return crimeTypes.includes(featureCrimeTypes)
+            const geoJSONFiltered = {
+                type: 'FeatureCollection',
+                features: geojson.features.filter(feature => {
+                    const featureCrimeTypes = feature.properties.crimeType
+                    return crimeTypes.includes(featureCrimeTypes)
 
-})
-}	
-        updateMap(geoJSONFiltered)
-})
+                })
+            }
+            updateMap(geoJSONFiltered)
+        })
 
         // Add to document
-	const dateContainer = document.querySelector('.date-container');
+        const dateContainer = document.querySelector('.date-container');
         dateContainer.appendChild(container);
-	dateContainer.appendChild(filterBtnContainer)
+        dateContainer.appendChild(filterBtnContainer)
 
-	for(let i = 0; i < geoJSONcontent.length; i++){
-		crimeCount = crimeCount + 1
-	}
-	const crimeCountDisplay = document.querySelector('.crime-count');
-	crimeCountDisplay.innerText = crimeCount
-	console.log(crimeCount)
-     const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
-     const geojson = {
+        for (let i = 0; i < geoJSONcontent.length; i++) {
+            crimeCount = crimeCount + 1
+        }
+        const crimeCountDisplay = document.querySelector('.crime-count');
+        crimeCountDisplay.innerText = crimeCount
+        console.log(crimeCount)
+        const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
+	console.log(crimeTypes)
+	console.log(colorArr)
+	console.log(crimeColorDict)
+        const geojson = {
             type: 'FeatureCollection',
             features: geoJSONcontent.map(crime => ({
                 type: 'Feature',
@@ -326,196 +351,155 @@ crimeTypes = Array.from(boxes)
                 }
             }))
         };
-//console.log(geojson)
-map.addSource('crimes', {
+        //console.log(geojson)
+        map.addSource('crimes', {
             'type': 'geojson',
             'data': geojson
-      });
+        });
 
 
-// Add circles
-map.addLayer({
-    'id': 'crimes-circles',
-    'type': 'circle',
-    'source': 'crimes',
-    'paint': {
-        'circle-radius': 6,
-        'circle-color': [
-		'match',
-	['get', 'crimeType'],
-            ...Object.entries(crimeColorDict).flat(),
-            '#999999', 
-	],
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff'
-    }
-});
-
-// Add labels
-map.addLayer({
-    'id': 'crimes-labels',
-    'type': 'symbol',
-    'source': 'crimes',
-    'layout': {
-        'text-field': ['get', 'year'],
-        'text-font': [
-            'Open Sans Semibold',
-            'Arial Unicode MS Bold'
-        ],
-        'text-offset': [0, 1.25],
-        'text-anchor': 'top'
-    }
-});
-// Make post request to the backend and send updated date information for filtering after button is clicked
-btn.addEventListener('click', () => {
-const input_date = document.querySelector("#dateInput").value;
-    fetch('http://localhost:3000/date', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({date: input_date })
-    })
-    .then(response => response.json())
-    .then(async data => {
-const geoJSONcontent = await fetchJSONData();
-
-const geojson = {
-        type: 'FeatureCollection',
-        features: geoJSONcontent.map(crime => ({
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [
-                    parseFloat(crime.longitude),
-                    parseFloat(crime.latitude)
-                ]
-            },
-            properties: {
-                date: crime.date,
-                crimeType: crime.crimeType
+        // Add circles
+        map.addLayer({
+            'id': 'crimes-circles',
+            'type': 'circle',
+            'source': 'crimes',
+            'paint': {
+                'circle-radius': 6,
+                'circle-color': [
+                    'match',
+                    ['get', 'crimeType'],
+                    ...Object.entries(crimeColorDict).flat(),
+                    '#999999',
+                ],
+                'circle-stroke-width': 1,
+                'circle-stroke-color': '#ffffff'
             }
-        }))
-    };
-	crimeCount = 0
-	for(let i = 0; i < geoJSONcontent.length; i++){
-        crimeCount = crimeCount + 1
-}
-const crimeCountDisplay = document.querySelector('.crime-count');
-crimeCountDisplay.innerText = crimeCount
+        });
 
-        updateMap(geojson)
+        // Add labels
+        map.addLayer({
+            'id': 'crimes-labels',
+            'type': 'symbol',
+            'source': 'crimes',
+            'layout': {
+                'text-field': ['get', 'year'],
+                'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                ],
+                'text-offset': [0, 1.25],
+                'text-anchor': 'top'
+            }
+        });
+        // Make post request to the backend and send updated date information for filtering after button is clicked
+        btn.addEventListener('click', () => {
+            const input_date = document.querySelector("#dateInput").value;
+            fetch('http://localhost:3000/date', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ date: input_date })
+            })
+                .then(response => response.json())
+                .then(async data => {
+                    const geoJSONcontent = await fetchJSONData();
 
-    });
-});
+                    const geojson = {
+                        type: 'FeatureCollection',
+                        features: geoJSONcontent.map(crime => ({
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [
+                                    parseFloat(crime.longitude),
+                                    parseFloat(crime.latitude)
+                                ]
+                            },
+                            properties: {
+                                date: crime.date,
+                                crimeType: crime.crimeType
+                            }
+                        }))
+                    };
+                    crimeCount = 0
+                    for (let i = 0; i < geoJSONcontent.length; i++) {
+                        crimeCount = crimeCount + 1
+                    }
+                    const crimeCountDisplay = document.querySelector('.crime-count');
+                    crimeCountDisplay.innerText = crimeCount
 
-function updateMap(geojsonInput) {
-        if (map.getSource('crimes')){
+                    updateMap(geojson)
+
+                });
+        });
+
+        function updateMap(geojsonInput) {
+            if (map.getSource('crimes')) {
                 map.removeLayer('crimes-circles');
                 map.removeLayer('crimes-labels');
                 map.removeSource('crimes');
-        }
-       map.addSource('crimes', {
-           'type': 'geojson',
-           'data': geojsonInput
-     });
-	crimeCount = 0;
- for(let i = 0; i < geojsonInput.features.length; i++){
-         crimeCount = crimeCount + 1
- }
- console.log(crimeCount)
+            }
+            map.addSource('crimes', {
+                'type': 'geojson',
+                'data': geojsonInput
+            });
+            crimeCount = 0;
+            for (let i = 0; i < geojsonInput.features.length; i++) {
+                crimeCount = crimeCount + 1
+            }
+            console.log(crimeCount)
 
-// Add circles
-map.addLayer({
-    'id': 'crimes-circles',
-    'type': 'circle',
-    'source': 'crimes',
-    'paint': {
-        'circle-radius': 6,
-        'circle-color': [
-                'match',
-        ['get', 'crimeType'], 
-            ...Object.entries(crimeColorDict).flat(),
-            '#999999',
-        ],
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff'
-    }
-});
+            // Add circles
+            map.addLayer({
+                'id': 'crimes-circles',
+                'type': 'circle',
+                'source': 'crimes',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': [
+                        'match',
+                        ['get', 'crimeType'],
+                        ...Object.entries(crimeColorDict).flat(),
+                        '#999999',
+                    ],
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#ffffff'
+                }
+            });
 
-// Add labels
-map.addLayer({
-    'id': 'crimes-labels',
-    'type': 'symbol',
-    'source': 'crimes',
-    'layout': {
-        'text-field': ['get', 'year'],
-        'text-font': [
-            'Open Sans Semibold',
-            'Arial Unicode MS Bold'
-        ],
-        'text-offset': [0, 1.25],
-        'text-anchor': 'top'
-    }
-});     
-        
-}               
+            // Add labels
+            map.addLayer({
+                'id': 'crimes-labels',
+                'type': 'symbol',
+                'source': 'crimes',
+                'layout': {
+                    'text-field': ['get', 'year'],
+                    'text-font': [
+                        'Open Sans Semibold',
+                        'Arial Unicode MS Bold'
+                    ],
+                    'text-offset': [0, 1.25],
+                    'text-anchor': 'top'
+                }
+            });
 
-        });
-	        
-        // Create a popup, but don't add it to the map yet.
-        const popup = new maplibregl.Popup({
-            closeButton: false,
-            closeOnClick: false
-        });
-        // Make sure to detect marker change for overlapping markers
-        // and use mousemove instead of mouseenter event
-        let currentFeatureCoordinates = undefined;
-	let isPopupOpen = false;
-	let currentPopup = null;
-if (window.innerWidth <= 1340){
-map.on('click', 'crimes-circles', (e) => {
-    const featureCoordinates = e.features[0].geometry.coordinates;
-    if (currentFeatureCoordinates !== featureCoordinates) {
-        currentFeatureCoordinates = featureCoordinates;
-
-        // Change the cursor style as a UI indicator.
-        map.getCanvas().style.cursor = 'pointer';
-
-        const crimeType = e.features[0].properties.crimeType
-        const coordinates = e.features[0].geometry.coordinates;
-        let crimeDate = e.features[0].properties.date
-        let cut = crimeDate.indexOf("T");
-        crimeDate = crimeDate.substring(0, cut)
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
 
-const popupContent = `
-    <strong>Crime:</strong> ${crimeType}<br>
-    <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
-    <strong>Date:</strong> ${crimeDate}
-        `;
-        // Populate the popup and set its coordinates
-        // based on the feature found.
-        // Add stars to map
-        popup.setOffset([0,180]).setHTML(popupContent).addTo(map);
-    }
-	    if (isPopupOpen) {
-        isPopupOpen = false;
-        popup.remove();
-        currentPopup = null;
-        return;
-    }
-isPopupOpen = true;
+    });
 
-});
-}
-
-        map.on('mousemove', 'crimes-circles', (e) => {
+    // Create a popup, but don't add it to the map yet.
+    const popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false
+    });
+    // Make sure to detect marker change for overlapping markers
+    // and use mousemove instead of mouseenter event
+    let currentFeatureCoordinates = undefined;
+    let isPopupOpen = false;
+    let currentPopup = null;
+    if (window.innerWidth <= 1340) {
+        map.on('click', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;
             if (currentFeatureCoordinates !== featureCoordinates) {
                 currentFeatureCoordinates = featureCoordinates;
@@ -525,42 +509,82 @@ isPopupOpen = true;
 
                 const crimeType = e.features[0].properties.crimeType
                 const coordinates = e.features[0].geometry.coordinates;
-		let crimeDate = e.features[0].properties.date
-		let cut = crimeDate.indexOf("T");
-		crimeDate = crimeDate.substring(0, cut)
+                let crimeDate = e.features[0].properties.date
+                let cut = crimeDate.indexOf("T");
+                crimeDate = crimeDate.substring(0, cut)
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
                 // over the copy being pointed to.
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
-        const popupContent = `
+
+                const popupContent = `
+    <strong>Crime:</strong> ${crimeType}<br>
+    <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
+    <strong>Date:</strong> ${crimeDate}
+        `;
+                // Populate the popup and set its coordinates
+                // based on the feature found.
+                // Add stars to map
+                popup.setOffset([0, 180]).setHTML(popupContent).addTo(map);
+            }
+            if (isPopupOpen) {
+                isPopupOpen = false;
+                popup.remove();
+                currentPopup = null;
+                return;
+            }
+            isPopupOpen = true;
+
+        });
+    }
+
+    map.on('mousemove', 'crimes-circles', (e) => {
+        const featureCoordinates = e.features[0].geometry.coordinates;
+        if (currentFeatureCoordinates !== featureCoordinates) {
+            currentFeatureCoordinates = featureCoordinates;
+
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            const crimeType = e.features[0].properties.crimeType
+            const coordinates = e.features[0].geometry.coordinates;
+            let crimeDate = e.features[0].properties.date
+            let cut = crimeDate.indexOf("T");
+            crimeDate = crimeDate.substring(0, cut)
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+            const popupContent = `
             <strong>Crime:</strong> ${crimeType}<br>
             <strong>Coordinates:</strong> ${coordinates[0].toFixed(6)}, ${coordinates[1].toFixed(6)}<br>
 	    <strong>Date:</strong> ${crimeDate} 
                 `;
-                // Populate the popup and set its coordinates
-                // based on the feature found.
-                // Add stars to map
-                popup.setLngLat(coordinates).setHTML(popupContent).addTo(map);
-            }
-        });
-const geocoderApi = {
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            // Add stars to map
+            popup.setLngLat(coordinates).setHTML(popupContent).addTo(map);
+        }
+    });
+    const geocoderApi = {
         forwardGeocode: async (config) => {
             const features = [];
             try {
                 const request =
-            `https://nominatim.openstreetmap.org/search?q=${
-                config.query
-            }&format=geojson&polygon_geojson=1&addressdetails=1`;
+                    `https://nominatim.openstreetmap.org/search?q=${config.query
+                    }&format=geojson&polygon_geojson=1&addressdetails=1`;
                 const response = await fetch(request);
                 const geojson = await response.json();
                 for (const feature of geojson.features) {
                     const center = [
                         feature.bbox[0] +
-                    (feature.bbox[2] - feature.bbox[0]) / 2,
+                        (feature.bbox[2] - feature.bbox[0]) / 2,
                         feature.bbox[1] +
-                    (feature.bbox[3] - feature.bbox[1]) / 2
+                        (feature.bbox[3] - feature.bbox[1]) / 2
                     ];
                     const point = {
                         type: 'Feature',
@@ -591,10 +615,10 @@ const geocoderApi = {
         })
     );
 
-        map.on('mouseleave', 'crimes-circles', () => {
-            currentFeatureCoordinates = undefined;
-            map.getCanvas().style.cursor = '';
-            popup.remove();
-        });
+    map.on('mouseleave', 'crimes-circles', () => {
+        currentFeatureCoordinates = undefined;
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
 
 })
