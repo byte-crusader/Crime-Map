@@ -205,7 +205,6 @@ returnKey().then(() => {
 
                     })
                 }
-
                 updateMap(geoJSONFiltered)
                 map.getSource('crimes').setData(geoJSONFiltered);
                 // Make sure the layer paint property uses the color dictionary
@@ -329,11 +328,11 @@ returnKey().then(() => {
         }
         const crimeCountDisplay = document.querySelector('.crime-count');
         crimeCountDisplay.innerText = crimeCount
-        console.log(crimeCount)
+        //console.log(crimeCount)
         const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
-	console.log(crimeTypes)
-	console.log(colorArr)
-	console.log(crimeColorDict)
+	//console.log(crimeTypes)
+	//console.log(colorArr)
+	//console.log(crimeColorDict)
         const geojson = {
             type: 'FeatureCollection',
             features: geoJSONcontent.map(crime => ({
@@ -404,7 +403,7 @@ returnKey().then(() => {
                 .then(response => response.json())
                 .then(async data => {
                     const geoJSONcontent = await fetchJSONData();
-
+        
                     const geojson = {
                         type: 'FeatureCollection',
                         features: geoJSONcontent.map(crime => ({
@@ -448,7 +447,7 @@ returnKey().then(() => {
             for (let i = 0; i < geojsonInput.features.length; i++) {
                 crimeCount = crimeCount + 1
             }
-            console.log(crimeCount)
+            //console.log(crimeCount)
 
             // Add circles
             map.addLayer({
@@ -501,15 +500,18 @@ returnKey().then(() => {
     if (window.innerWidth <= 1340) {
         map.on('click', 'crimes-circles', (e) => {
             const featureCoordinates = e.features[0].geometry.coordinates;
+            //console.log("here",e.features[0])
             if (currentFeatureCoordinates !== featureCoordinates) {
                 currentFeatureCoordinates = featureCoordinates;
 
+                console.log(e.features[0])
                 // Change the cursor style as a UI indicator.
                 map.getCanvas().style.cursor = 'pointer';
 
                 const crimeType = e.features[0].properties.crimeType
                 const coordinates = e.features[0].geometry.coordinates;
                 let crimeDate = e.features[0].properties.date
+               // console.log("first", crimeDate)
                 let cut = crimeDate.indexOf("T");
                 crimeDate = crimeDate.substring(0, cut)
                 // Ensure that if the map is zoomed out such that multiple
@@ -539,7 +541,6 @@ returnKey().then(() => {
 
         });
     }
-
     map.on('mousemove', 'crimes-circles', (e) => {
         const featureCoordinates = e.features[0].geometry.coordinates;
         if (currentFeatureCoordinates !== featureCoordinates) {
@@ -547,7 +548,7 @@ returnKey().then(() => {
 
             // Change the cursor style as a UI indicator.
             map.getCanvas().style.cursor = 'pointer';
-
+            //console.log(e.features[0])
             const crimeType = e.features[0].properties.crimeType
             const coordinates = e.features[0].geometry.coordinates;
             let crimeDate = e.features[0].properties.date
