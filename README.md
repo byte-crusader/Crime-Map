@@ -1,7 +1,5 @@
 # US open source police station crime records
 
-# East:
-
  New York City
  https://data.cityofnewyork.us/resource/qgea-i56i.json
 
@@ -17,9 +15,6 @@
  Florida	Miami-Dade County
  rj6a-xsnz	https://data.miamidade.gov/resource/rj6a-xsnz.json
 
-# Midwest:
-
-
  Chicago
  https://data.cityofchicago.org/resource/ijzp-q8t2.json
 
@@ -28,11 +23,6 @@
 
  Cincinnati
  https://data.cincinnati-oh.gov/resource/k59e-2pvf.json
-
-
-
-# West Coast:
-
 
  Los Angeles
  https://data.lacity.org/resource/2nrs-mtv8.json
@@ -46,23 +36,17 @@
  Oakland
  https://data.oaklandca.gov/resource/ym6k-rx7a.json
 
-
-
-# South:
-
-
  Austin
  https://data.austintexas.gov/resource/fdj4-gpfu.json
 
  Dallas
  https://www.dallasopendata.com/resource/qv6i-rri7.json
 
- New Orleans
+ New Orleans 
  https://data.nola.gov/resource/5fn8-vtui.json
+ 
+ Denver	
+ https://data.denvergov.org/resource/xmn8-bsdr.json
 
-
-
-
-
-Colorado	Denver	xmn8-bsdr	https://data.denvergov.org/resource/xmn8-bsdr.json
-Kansas	Topeka	9x46-8cz2	https://data.topeka.org/resource/9x46-8cz2.json
+ Topeka
+ https://data.topeka.org/resource/9x46-8cz2.json
