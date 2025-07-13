@@ -205,6 +205,14 @@ returnKey().then(() => {
 
                     })
                 }
+                crimeCount = 0
+                const crimes = geoJSONFiltered.features
+                console.log(crimes)
+                for (let i = 0; i < crimes.length; i++) {
+                    crimeCount = crimeCount + 1
+                }
+                const crimeCountDisplay = document.querySelector('.crime-count');
+                crimeCountDisplay.innerText = crimeCount
                 updateMap(geoJSONFiltered)
                 map.getSource('crimes').setData(geoJSONFiltered);
                 // Make sure the layer paint property uses the color dictionary
@@ -238,7 +246,7 @@ returnKey().then(() => {
         const linkBox = document.createElement('div');
         const endPointsH3 = document.createElement('h3');
         endPointsH3.style.marginBottom = '1.5rem';
-        endPointsH3.style.fontSize = '1.25rem';
+        endPointsH3.style.fontSize = '1.4rem';
         linkBox.classList.add("urlWrapper")
         filterTypeButton.addEventListener('click', () => {
             const crimeWrapper = document.querySelectorAll('.crime-wrapper');
@@ -316,6 +324,14 @@ returnKey().then(() => {
 
                 })
             }
+
+            crimeCount = 0
+            const crimes = geoJSONFiltered.features
+            for (let i = 0; i < crimes.length; i++) {
+                crimeCount = crimeCount + 1
+            }
+            const crimeCountDisplay = document.querySelector('.crime-count');
+            crimeCountDisplay.innerText = crimeCount
             updateMap(geoJSONFiltered)
         })
 

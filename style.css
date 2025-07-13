@@ -41,7 +41,6 @@ input[type="checkbox"] {
         font-size: .7rem;
         margin-left: .3rem;
 	bottom: .4rem;
-	position: relative;
 }
 
 input[type="checkbox"] {
@@ -51,6 +50,7 @@ input[type="checkbox"] {
         height: 1rem;
         border: 1px solid;
         background: black;
+        word-break: break-all;
 }
 
 input[type="checkbox"]::before {
@@ -351,12 +351,12 @@ height: 328px;
 
 .url {
         color: orange;
-        font-size: 1.1rem;
+        font-size: 1.4rem;
         text-decoration: none;
 }
 
 .url-span {
-        font-size: .9rem;
+        font-size: 1.2rem;
         color: #7937bb;
 }
 
