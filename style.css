@@ -105,7 +105,7 @@ label[for="dateInput"] {
 
 /* Button styling */
 button {
-        background-color: black;
+        background-color: rgba(255, 255, 255, 0);
         color: var(--matrix-green);
         border: 1px solid var(--matrix-green);
         font-family: 'Courier New', monospace;
@@ -135,6 +135,7 @@ button:focus {
         display: flex;
         align-items: center;
         justify-content: center;
+position: relative;
 }
 
 .date-container {
@@ -181,11 +182,10 @@ button:focus {
         margin-left: .1rem;
         margin-top: .3rem;
 }
-
 /* 🧍 Very short screens */
 @media (min-height: 500px) {
         #map {
-                height: 300px;
+                height: 600px;
         }
 }
 
@@ -197,26 +197,62 @@ button:focus {
 }
 
 
-/* Tall screens */
-@media (min-height: 760px) and (min-width: 360px) {
+@media (min-height: 760px) and (min-width: 160px) {
         #map {
                 height: 1991px;
         }
-
+.filter-options-btn {
+top: 1747px;
 }
 
-/* Desktop screens */
+.icon-link-container {
+top: 1734px;
+}
+
+.date-container {
+height: 891px;
+}
+
+#checkbox-container {
+height: 400px;
+}
+}
+
 @media (min-height: 760px) and (min-width: 1340px) {
         #map {
                 height: 700px;
         }
 
+.icon-link-container {
+top: 819px;    
 }
 
+}
+/*    #map {
+
+height: 1991px;
+}
+.filter-options-btn {
+top: 1747px;
+}
+
+.icon-link-container {
+top: 1734px;
+}
+
+.date-container {
+height: 891px;
+}
+
+#checkbox-container {
+height: 328px;
+
+} */
 @media (max-width: 1340px) {
         .main-container {
                 flex-direction: column;
                 padding-bottom: 1rem;
+                position: static;
         }
 
         .inner-date-container {

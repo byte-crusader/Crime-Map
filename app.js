@@ -121,7 +121,7 @@ returnKey().then(() => {
         const searchBar = document.createElement('input');
         searchBar.setAttribute('type', 'text');
         searchBar.classList.add('search-bar')
-	searchBar.placeholder = 'Search...'
+    	searchBar.placeholder = 'Search...'
         container.appendChild(searchBar)
         crimeTypesSorted.forEach(crimeType => {
 
@@ -238,6 +238,7 @@ returnKey().then(() => {
         const linkBox = document.createElement('div');
         const endPointsH3 = document.createElement('h3');
         endPointsH3.style.marginBottom = '1.5rem';
+        endPointsH3.style.fontSize = '1.25rem';
         linkBox.classList.add("urlWrapper")
         filterTypeButton.addEventListener('click', () => {
             const crimeWrapper = document.querySelectorAll('.crime-wrapper');
