@@ -12,8 +12,8 @@
  Pittsburgh
  https://data.wprdc.org/api/3/action/datastore_search?resource_id=1797ead8-8262-41cc-9099-cbc67a3ce4e0
 
- Florida	Miami-Dade County
- rj6a-xsnz	https://data.miamidade.gov/resource/rj6a-xsnz.json
+ Miami-Dade County
+	https://data.miamidade.gov/resource/rj6a-xsnz.json
 
  Chicago
  https://data.cityofchicago.org/resource/ijzp-q8t2.json
