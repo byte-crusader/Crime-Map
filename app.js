@@ -11,7 +11,7 @@ function createCrimeColors(colorData, crimeData) {
 async function fetchAPIKey() {
     try {
         //const response = await fetch('./test.geojson');
-        const response = await fetch('http://localhost:3000/key');
+        const response = await fetch('http://127.0.0.1:3000/key')
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -48,7 +48,7 @@ async function returnKey() {
 async function fetchJSONData() {
     try {
         //const response = await fetch('./test.geojson');
-        const response = await fetch('http://localhost:3000/crimes');
+        const response = await fetch('http://127.0.0.1:3000/crimes');
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -161,7 +161,7 @@ returnKey().then(() => {
 `;
             label.htmlFor = checkbox.id;
             label.textContent = crimeType.toUpperCase();
- 	    label.classList.add('checkbox-label');
+ 	          label.classList.add('checkbox-label');
             const colorDot = document.createElement('span');
             colorDot.classList.add('colorDot');
             colorArr.push(randomColorGen())
