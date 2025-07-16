@@ -313,12 +313,15 @@ top: 819px;
         }
 
         .icon-link-container {
-                position: absolute;
+               /* position: absolute;
                 z-index: 1;
                 top: 1806px;
-                right: 58px;
+                right: 58px;*/
+                position:static;
+                display:flex;
+                margin-bottom:.5rem;
+                margin-top:1rem;
         }
-
         .icon-link {
                 display: block;
                 font-size: 25px;
@@ -327,8 +330,8 @@ top: 819px;
         }
 
         .icon-link:nth-child(2) {
-                margin-left: .1rem;
-
+                margin-left:1rem;
+                margin-top:0rem;
         }
 
         .maplibregl-canvas {
@@ -361,11 +364,15 @@ top: 819px;
                 z-index: 1;
                 top: 1700px;
                 left: 58px;
+                margin-top:1rem;
 
         }
+        #shortcut2{
+            position:static;
 
+        }
         .date-container {
-                height: 971px;
+                height: 871px;
         }
 
         .filter-btn-container h3 {
