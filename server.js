@@ -35,6 +35,9 @@ fastify.get('/key', async (request, reply) => {
 
 })
 
+
+globalRoutesArr = []
+hasRan = false
 // Declare a route
 fastify.get('/crimes', async (request, reply) => {
   try {
@@ -93,6 +96,8 @@ fastify.get('/crimes', async (request, reply) => {
        latitude: crime.lat
     }));
     const combined = [...filteredData, ...filteredData1, ...filteredData2, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData];
+    globalRoutesArr.push(filteredData, filteredData1, filteredData2, CincinnatiData, SanFranciscoData, LosAngelesData);
+    hasRan = true
     //console.log("combined",combined)
     return combined
   } catch (error) {
@@ -101,6 +106,22 @@ fastify.get('/crimes', async (request, reply) => {
   }
 })
 
+fastify.get('/cityData', async (request, reply) => {
+    if(hasRan == true) {
+        try {
+            //console.log(globalRoutesArr)
+            const cityCrimeCounts = []
+            for(let i = 0; i < globalRoutesArr.length; i++){
+                cityCrimeCounts.push(globalRoutesArr[i].length)
+}
+            console.log(cityCrimeCounts)
+            return globalRoutesArr
+        } catch (error){
+            console.log(error.message)
+            return [];
+        }
+   }
+})
 
 // Run the server!
 const start = async () => {

@@ -7,7 +7,16 @@ function createCrimeColors(colorData, crimeData) {
     }
     return dict
 }
-// Create map object, set map starting point
+
+async function fetchCityCrimeCount() {
+    try {
+        const response = await fetch('http://127.0.0.1:3000/cityData')
+        const data = await response.json()
+        return data
+    } catch {
+        console.error(error)
+    }
+}
 async function fetchAPIKey() {
     try {
         //const response = await fetch('./test.geojson');
@@ -75,6 +84,8 @@ returnKey().then(() => {
         const crimeTypesContainer = document.querySelector('#crimeTypes')
         const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
         //console.log(geoJSONcontent)
+        
+
         let crimeTypes = []
         geoJSONcontent.forEach(crime => {
 	//	if(crime.crimeType){
@@ -228,6 +239,9 @@ returnKey().then(() => {
         });
 
         let isOn = true
+        fetchCityCrimeCount().then(data => {
+            console.log(data)
+        })
         const policeEndPoints = [
             `https://data.cityofnewyork.us/resource/qgea-i56i.json`,
             `https://data.seattle.gov/resource/tazs-3rd5.json`,

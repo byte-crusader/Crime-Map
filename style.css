@@ -302,6 +302,10 @@ top: 819px;
 
 }
 @media (max-width: 1340px) {
+        .url-span {
+            font-size:1rem;
+
+        }
         .main-container {
                 flex-direction: column;
                 padding-bottom: 1rem;
