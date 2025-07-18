@@ -96,6 +96,7 @@ fastify.get('/crimes', async (request, reply) => {
        latitude: crime.lat
     }));
     const combined = [...filteredData, ...filteredData1, ...filteredData2, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData];
+    globalRoutesArr = []
     globalRoutesArr.push(filteredData, filteredData1, filteredData2, CincinnatiData, SanFranciscoData, LosAngelesData);
     hasRan = true
     //console.log("combined",combined)
