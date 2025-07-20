@@ -14,6 +14,7 @@ fastify.register(require('@fastify/cors'), {
   origin: '*'  // This allows all origins - be more restrictive in production
 })
 let dateStored = "2024-01-01";
+fastify
 fastify.post('/date', async (request, reply) => {
   try {
     console.log(request.body)
@@ -32,8 +33,8 @@ fastify.get('/key', async (request, reply) => {
     res.status(500).send('Error fetching data');
   }
 
-
 })
+
 
 // Declare a route
 fastify.get('/crimes', async (request, reply) => {
@@ -45,7 +46,8 @@ fastify.get('/crimes', async (request, reply) => {
       `https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
       `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json?$where=date_reported between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
       `https://data.sfgov.org/resource/wg3w-h783.json?$where=incident_date between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
-      `https://data.lacity.org/resource/2nrs-mtv8.json?$where=date_occ between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`
+      `https://data.lacity.org/resource/2nrs-mtv8.json?$where=date_occ between '${dateStored}T00:00:00' and '${dateStored}T23:59:59'`,
+      `https://www.dallasopendata.com/resource/qv6i-rri7.json?$where=callreceived between '${dateStored} 00:00:00.0000000' and '${dateStored} 23:59:59.9999999'`
     ]
     for (let i = 0; i < endPointArr.length; i++) {
       let response = await fetch(endPointArr[i])
@@ -98,7 +100,20 @@ fastify.get('/crimes', async (request, reply) => {
        latitude: crime.lat,
        city: "LosAngeles"
     }));
-    const combined = [...NewYorkData, ...SeattleData, ...ChicagoData, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData];
+    const DallasData = dataArr[6].map(crime => {
+       let lat = crime.geocoded_column.latitude;
+       let lon = crime.geocoded_column.longitude;
+       console.log(lat, lon) 
+      return{
+       date: crime.callreceived,
+       crimeType: crime.nibrs_crime_category,
+       longitude: lon,
+       latitude: lat,
+       city: "Dallas"
+      };
+    });
+    const combined = [...NewYorkData, ...SeattleData, ...ChicagoData, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData, ...DallasData];
+    console.log(dataArr[6])
     //console.log("combined",combined)
     return combined
   } catch (error) {

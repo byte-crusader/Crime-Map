@@ -41,7 +41,6 @@ input[type="checkbox"] {
         font-size: .7rem;
         margin-left: .3rem;
 	bottom: .4rem;
-	position: relative;
 }
 
 input[type="checkbox"] {
@@ -351,12 +350,12 @@ height: 328px;
 
 .url {
         color: orange;
-        font-size: 1.1rem;
+        font-size: 25px;
         text-decoration: none;
 }
 
 .url-span {
-        font-size: .9rem;
+        font-size: 22px;
         color: red;
 }
 

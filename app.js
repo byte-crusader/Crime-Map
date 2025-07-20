@@ -116,6 +116,9 @@ function crimeCountDictGen(currentGeoJson) {
             if(city === "LosAngeles"){
                 crimeCountDict["LosAngeles"] += 1
                 }
+            if(city === "Dallas"){
+                crimeCountDict["Dallas"] += 1
+            }
      })
      //console.log(crimeCountDict)
 
@@ -131,14 +134,15 @@ let crimeCountDict = {
     "Chicago": 0,
     "Cincinnati": 0,
     "SanFrancisco": 0,
-    "LosAngeles": 0
+    "LosAngeles": 0,
+    "Dallas": 0
 }
 //Load map function, start on page load    
 returnKey().then(() => {
     map.on('load', async () => {
         const crimeTypesContainer = document.querySelector('#crimeTypes')
         const geoJSONcontent = await fetchJSONData();//grab the json file data and assign it to a variable
-        //console.log(geoJSONcontent)
+        console.log(geoJSONcontent)
         let crimeTypes = []
         geoJSONcontent.forEach(crime => {
 	//	if(crime.crimeType){
@@ -295,22 +299,15 @@ returnKey().then(() => {
             `https://data.cityofchicago.org/resource/ijzp-q8t2.json`,
             `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
             `https://data.sfgov.org/resource/wg3w-h783.json`,
-            `https://data.lacity.org/resource/2nrs-mtv8.json`
+            `https://data.lacity.org/resource/2nrs-mtv8.json`,
+            `https://www.dallasopendata.com/resource/qv6i-rri7.json`
 
-        ]
-        const cities = [
-            'New York',
-            'Seattle',
-            'Chicago',
-            'Cincinnati',
-            'SanFrancisco',
-            'LosAngeles'
         ]
         let cityCount = 0;
         const linkBox = document.createElement('div');
         const endPointsH3 = document.createElement('h3');
         endPointsH3.style.marginBottom = '1.5rem';
-        endPointsH3.style.fontSize = '1.25rem';
+        endPointsH3.style.fontSize = '30px';
         linkBox.classList.add("urlWrapper")
         filterTypeButton.addEventListener('click', () => {
             //console.log(crimeCountDict)
