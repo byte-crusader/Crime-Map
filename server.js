@@ -56,43 +56,49 @@ fastify.get('/crimes', async (request, reply) => {
       dataArr.push(data)
     }
 
-    const filteredData = dataArr[0].map(crime => ({
+    const NewYorkData = dataArr[0].map(crime => ({
       date: crime.cmplnt_fr_dt,
       crimeType: crime.ofns_desc,
       longitude: crime.longitude,
-      latitude: crime.latitude
+      latitude: crime.latitude,
+      city: "New York"
     }));
-    const filteredData1 = dataArr[1].map(crime => ({
+    const SeattleData = dataArr[1].map(crime => ({
       date: crime.offense_date,
       crimeType: crime.offense_sub_category,
       longitude: crime.longitude,
-      latitude: crime.latitude
+      latitude: crime.latitude,
+      city: "Seattle"
     }));
-    const filteredData2 = dataArr[2].map(crime => ({
+    const ChicagoData = dataArr[2].map(crime => ({
       date: crime.date,
       crimeType: crime.primary_type,
       longitude: crime.longitude,
-      latitude: crime.latitude
+      latitude: crime.latitude,
+      city: "Chicago"
     }));
     const CincinnatiData = dataArr[3].map(crime => ({
       date: crime.date_reported,
       crimeType: crime.offense,
       longitude: crime.longitude_x,
-      latitude: crime.latitude_x
+      latitude: crime.latitude_x,
+      city: "Cincinnati"
     }));
     const SanFranciscoData = dataArr[4].map(crime => ({
       date: crime.incident_date,
       crimeType: crime.incident_subcategory,
       longitude: crime.longitude,
-      latitude: crime.latitude
+      latitude: crime.latitude,
+      city: "SanFrancisco"
     }));
     const LosAngelesData = dataArr[5].map(crime => ({
        date: crime.date_occ,
        crimeType: crime.crm_cd_desc,
        longitude: crime.lon,
-       latitude: crime.lat
+       latitude: crime.lat,
+       city: "LosAngeles"
     }));
-    const combined = [...filteredData, ...filteredData1, ...filteredData2, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData];
+    const combined = [...NewYorkData, ...SeattleData, ...ChicagoData, ...CincinnatiData, ...SanFranciscoData, ...LosAngelesData];
     //console.log("combined",combined)
     return combined
   } catch (error) {

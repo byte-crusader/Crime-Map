@@ -357,11 +357,11 @@ height: 328px;
 
 .url-span {
         font-size: .9rem;
-        color: #7937bb;
+        color: red;
 }
 
-.url-span:hover {
-        color: orange;
+.url:hover {
+        color: cyan;
 }
 
 .filter-btn-container {

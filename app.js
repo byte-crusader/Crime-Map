@@ -65,10 +65,74 @@ function randomColorGen() {
     return "#" + randomColor.padStart(6, '0');
 }
 
+function crimeCountDictGen(currentGeoJson) {
+    
+    if (currentGeoJson.length === 0 || !currentGeoJson) {
+        //console.log("Empty")
+        for (let key in crimeCountDict) {
+        if (crimeCountDict.hasOwnProperty(key) && Number.isInteger(crimeCountDict[key])){
+            crimeCountDict[key] = 0;
+            }
+        }
+        return  
+    }
+    for (let key in crimeCountDict) {
+        if (crimeCountDict.hasOwnProperty(key) && Number.isInteger(crimeCountDict[key])){
+            crimeCountDict[key] = 0;
+        }
+        
+    }
+
+        //console.log(crimeCountDict, "Zeroed")
+        //console.log(currentGeoJson, "Crimes updated")
+        currentGeoJson.forEach(crime => {
+            let city
+            
+            if(crime.city){
+                city = crime.city
+            }else if (crime.properties && crime.properties.city){
+                city = crime.properties.city
+            }
+
+            if(city === "New York"){
+                crimeCountDict["New York"] += 1
+                }
+            if(city === "Seattle"){
+                crimeCountDict["Seattle"] += 1
+                }
+
+            if(city === "Chicago"){
+                crimeCountDict["Chicago"] += 1
+                }
+
+            if(city === "Cincinnati"){
+                crimeCountDict["Cincinnati"] += 1
+                }
+       
+            if(city === "SanFrancisco"){
+                crimeCountDict["SanFrancisco"] += 1
+                }
+
+            if(city === "LosAngeles"){
+                crimeCountDict["LosAngeles"] += 1
+                }
+     })
+     //console.log(crimeCountDict)
+
+}
 
 let colorArr = []
 let colorCount = 0
 let crimeCount = 0
+
+let crimeCountDict = {
+    "New York": 0,
+    "Seattle": 0,
+    "Chicago": 0,
+    "Cincinnati": 0,
+    "SanFrancisco": 0,
+    "LosAngeles": 0
+}
 //Load map function, start on page load    
 returnKey().then(() => {
     map.on('load', async () => {
@@ -83,6 +147,8 @@ returnKey().then(() => {
             }
 	//	}
         })
+        //console.log(crimeCountDict)
+        crimeCountDictGen(geoJSONcontent)
         // console.log(crimeTypes)
         // console.log(crimeTypes);
         // Create checkbox container
@@ -192,7 +258,8 @@ returnKey().then(() => {
                         },
                         properties: {
                             date: crime.date,
-                            crimeType: crime.crimeType
+                            crimeType: crime.crimeType,
+                            city: crime.city
                         }
                     }))
                 };
@@ -205,6 +272,8 @@ returnKey().then(() => {
 
                     })
                 }
+                
+                //console.log("Filtered JSON DATA", geoJSONFiltered.features)
                 updateMap(geoJSONFiltered)
                 map.getSource('crimes').setData(geoJSONFiltered);
                 // Make sure the layer paint property uses the color dictionary
@@ -225,25 +294,29 @@ returnKey().then(() => {
             `https://data.seattle.gov/resource/tazs-3rd5.json`,
             `https://data.cityofchicago.org/resource/ijzp-q8t2.json`,
             `https://data.cincinnati-oh.gov/resource/k59e-2pvf.json`,
-            `https://data.sfgov.org/resource/wg3w-h783.json`
+            `https://data.sfgov.org/resource/wg3w-h783.json`,
+            `https://data.lacity.org/resource/2nrs-mtv8.json`
+
         ]
         const cities = [
             'New York',
             'Seattle',
             'Chicago',
             'Cincinnati',
-            'SanFrancisco'
+            'SanFrancisco',
+            'LosAngeles'
         ]
-
+        let cityCount = 0;
         const linkBox = document.createElement('div');
         const endPointsH3 = document.createElement('h3');
         endPointsH3.style.marginBottom = '1.5rem';
         endPointsH3.style.fontSize = '1.25rem';
         linkBox.classList.add("urlWrapper")
         filterTypeButton.addEventListener('click', () => {
+            //console.log(crimeCountDict)
             const crimeWrapper = document.querySelectorAll('.crime-wrapper');
             const crimeContainer = document.querySelector('#checkbox-container');
-            console.log(crimeContainer)
+            //console.log(crimeContainer)
             if (isOn == true) {
                 crimeWrapper.forEach(node => {
                     node.style.display = 'none';
@@ -252,19 +325,24 @@ returnKey().then(() => {
                 isOn = false
                 filterTypeButton.textContent = "[x]"
                 linkBox.innerHTML = '';
-                endPointsH3.textContent = 'Police Data Endpoints'
+                endPointsH3.textContent = 'Crimes Per City'
                 crimeContainer.appendChild(endPointsH3);
-                for (let i = 0; i < policeEndPoints.length; i++) {
-                    const item = document.createElement('a');
-                    const span = document.createElement('span');
-                    span.classList.add('url-span');
-                    span.textContent = policeEndPoints[i]
-                    item.classList.add('url')
-                    item.href = policeEndPoints[i];
-                    item.textContent = cities[i] + " - ";
-                    item.appendChild(span)
-                    linkBox.appendChild(item)
-                }
+                    for (const key in crimeCountDict) {
+                        if (crimeCountDict.hasOwnProperty(key) && cityCount <= policeEndPoints.length) { 
+                            const item = document.createElement('a');
+                            const span = document.createElement('span');
+                            item.classList.add('url');
+                            item.textContent = key + " : "
+                            span.classList.add('url-span')
+                            item.href = policeEndPoints[cityCount];
+                            cityCount = cityCount + 1
+                            span.textContent =  crimeCountDict[key];
+                            item.appendChild(span)
+                            linkBox.appendChild(item)
+
+                        }
+                    }
+               
                 crimeContainer.appendChild(linkBox)
             } else if (isOn == false) {
                 crimeWrapper.forEach(node => {
@@ -272,10 +350,10 @@ returnKey().then(() => {
                 })
                 isOn = true
                 filterTypeButton.textContent = "[ ]"
-		searchBar.style.display = 'block';
+        		searchBar.style.display = 'block';
                 linkBox.remove()
                 endPointsH3.remove()
-                count = 0
+                cityCount = 0
             }
         })
         searchBar.addEventListener('input', function (event) {
@@ -316,6 +394,7 @@ returnKey().then(() => {
 
                 })
             }
+            //console.log(geoJSONFiltered)
             updateMap(geoJSONFiltered)
         })
 
@@ -329,7 +408,7 @@ returnKey().then(() => {
         }
         const crimeCountDisplay = document.querySelector('.crime-count');
         crimeCountDisplay.innerText = crimeCount
-        //console.log(crimeCount)
+        console.log(crimeCount)
         const crimeColorDict = createCrimeColors(colorArr, crimeTypes)
 	//console.log(crimeTypes)
 	//console.log(colorArr)
@@ -347,7 +426,8 @@ returnKey().then(() => {
                 },
                 properties: {
                     date: crime.date,
-                    crimeType: crime.crimeType
+                    crimeType: crime.crimeType,
+                    city: crime.city
                 }
             }))
         };
@@ -418,7 +498,8 @@ returnKey().then(() => {
                             },
                             properties: {
                                 date: crime.date,
-                                crimeType: crime.crimeType
+                                crimeType: crime.crimeType,
+                                city: crime.city
                             }
                         }))
                     };
@@ -427,8 +508,8 @@ returnKey().then(() => {
                         crimeCount = crimeCount + 1
                     }
                     const crimeCountDisplay = document.querySelector('.crime-count');
-                    crimeCountDisplay.innerText = crimeCount
-
+                   crimeCountDisplay.innerText = crimeCount
+            
                     updateMap(geojson)
 
                 });
@@ -448,8 +529,11 @@ returnKey().then(() => {
             for (let i = 0; i < geojsonInput.features.length; i++) {
                 crimeCount = crimeCount + 1
             }
-            //console.log(crimeCount)
+              const crimeCountDisplay = document.querySelector('.crime-count');
+              crimeCountDisplay.innerText = crimeCount
 
+
+            //console.log(crimeCount)
             // Add circles
             map.addLayer({
                 'id': 'crimes-circles',
@@ -484,6 +568,7 @@ returnKey().then(() => {
                 }
             });
 
+            crimeCountDictGen(geojsonInput.features)
         }
 
     });
