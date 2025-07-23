@@ -14,12 +14,12 @@
 	<script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.min.js"></script>
 	<link rel="stylesheet"
 		href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css" />
-	<div class="main-container">
-		<div id='map' class="shortcut2-go">
+		
+<div class="main-container">
+        <div id='map' class="shortcut2-go">
 
 			<button id="shortcut1" class="filter-options-btn">Filter Options </button>
 		</div>
-
 		<div class="date-container">
 
 			<div class="inner-date-container">
@@ -42,26 +42,36 @@
 					<i class="fab fa-github"></i>
 				</a>
 			</div>
-
+</div>
 		</div>
-	</div>
 	<script src="app.js"></script>
 
 	<script>
-		document.querySelector('#shortcut1').addEventListener('click', function () {
+        const shortCut1 = document.querySelector('#shortcut1');
+        const shortCut2 = document.querySelector('#shortcut2');
+        const iconLinks = document.querySelector('.icon-link-container');
+
+		shortCut1.addEventListener('click', function () {
 			console.log("Hello")
-			document.getElementById('shortcut1-go').scrollIntoView({
+            document.getElementById('shortcut1-go').scrollIntoView({
 				behavior: 'smooth',
 				block: 'start'
 			});
+             this.style.display = "none";
+             shortCut2.style.display = "block";
+             iconLinks.style.display = "block"
 		});
-		document.querySelector('#shortcut2').addEventListener('click', function () {
+
+
+		shortCut2.addEventListener('click', function () {
 			console.log("Hello")
 			document.querySelector('.shortcut2-go').scrollIntoView({
 				behavior: 'smooth',
 				block: 'start'
 			});
-
+            this.style.display = "none";
+            shortCut1.style.display = "block";
+            iconLinks.style.display = "none";
 		}); 
 	</script>
 </body>
