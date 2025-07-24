@@ -35,7 +35,7 @@ input[type="checkbox"] {
         content: "●";
         font-size: .7rem;
         margin-left: .3rem;
-	bottom: .4rem;
+     	bottom: .4rem;
 }
 
 input[type="checkbox"] {
@@ -76,6 +76,7 @@ input[type="checkbox"]:checked::before {
         color: var(--matrix-green);
 	max-height:72px;
 	margin-bottom: 1rem;
+    word-wrap: break-word;
 }
 
 /* Label styling */
@@ -128,6 +129,7 @@ button:focus {
         width: 100%;
         overflow-y: scroll;
         height:100vh;
+        overflow: hidden;
         scroll-snap-type: y mandatory;
 }
 
@@ -172,7 +174,8 @@ button:focus {
         z-index: 1;
         bottom: 20px;
         right: 20px;
-
+        display:flex;
+        flex-direction:column;
 }
 
 .icon-link {
@@ -262,4 +265,34 @@ button:focus {
 }
 .searchBar::placeholder {
 	font-size:.8rem;
+}
+@media (max-width: 600px) {
+
+    #shortcut2{
+        position:static;
+    }
+    .icon-link-container{
+        position:static;
+        display:flex;
+        flex-direction:row;
+        margin:.5rem;
+    }
+    .icon-link:nth-child(2){
+        margin-left:.5rem;
+        margin-top:0;
+    }
+    #checkbox-container {
+        border-top:none;
+        border-left:none;
+        border-right:none;
+        font-size:1rem;
+        min-width: 0;
+        min-height: 0;
+
+        }
+
+   .main-container {
+        overflow:scroll;
+
+   }
 }
