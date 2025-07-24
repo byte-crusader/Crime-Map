@@ -241,6 +241,7 @@ button:focus {
         flex-wrap: wrap;
         max-width: 400px;
         width: 70%;
+        min-width:266px;
 }
 
 .filter-btn-container h3 {
