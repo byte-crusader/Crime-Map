@@ -51,6 +51,18 @@
         const shortCut1 = document.querySelector('#shortcut1');
         const shortCut2 = document.querySelector('#shortcut2');
         const iconLinks = document.querySelector('.icon-link-container');
+		window.onload = function() {
+
+			document.querySelector('.shortcut2-go').scrollIntoView({
+				behavior: 'smooth',
+				block: 'start'
+			});
+            shortCut2.style.display = "none";
+            shortCut1.style.display = "block";
+            iconLinks.style.display = "none";
+				}
+
+
 
 		shortCut1.addEventListener('click', function () {
 			console.log("Hello")

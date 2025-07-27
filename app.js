@@ -11,7 +11,7 @@ function createCrimeColors(colorData, crimeData) {
 async function fetchAPIKey() {
     try {
         //const response = await fetch('./test.geojson');
-        const response = await fetch('http://localhost:3000/key');
+        const response = await fetch('/key');
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -48,7 +48,7 @@ async function returnKey() {
 async function fetchJSONData() {
     try {
         //const response = await fetch('./test.geojson');
-        const response = await fetch('http://localhost:3000/crimes');
+        const response = await fetch('/crimes');
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -471,7 +471,7 @@ returnKey().then(() => {
         // Make post request to the backend and send updated date information for filtering after button is clicked
         btn.addEventListener('click', () => {
             const input_date = document.querySelector("#dateInput").value;
-            fetch('http://localhost:3000/date', {
+            fetch('/date', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
